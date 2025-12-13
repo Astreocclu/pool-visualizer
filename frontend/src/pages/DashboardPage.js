@@ -23,7 +23,7 @@ const DashboardPage = ({ user, onLogout }) => {
     return (
         <div className="dashboard-page" style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <h1>🏠 Homescreen Visualizer Dashboard</h1>
+                <h1>🏊 Pools Visualizer Dashboard</h1>
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <button
                         onClick={onLogout}
@@ -43,7 +43,7 @@ const DashboardPage = ({ user, onLogout }) => {
 
             <div style={{ backgroundColor: 'var(--glass-bg)', padding: '20px', borderRadius: '8px', marginBottom: '20px', border: '1px solid var(--glass-border)' }}>
                 <h2>✅ Welcome, {user.username}!</h2>
-                <p>You have successfully logged into the Homescreen Visualizer.</p>
+                <p>You have successfully logged into the Pools Visualizer.</p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
@@ -91,7 +91,7 @@ const DashboardPage = ({ user, onLogout }) => {
                                 display: 'block'
                             }}
                         >
-                            🖥️ Screen Types ({screenTypes.length})
+                            🏊 Pool Types ({screenTypes.length})
                         </Link>
                     </div>
                 </div>
@@ -100,7 +100,7 @@ const DashboardPage = ({ user, onLogout }) => {
                     <h3>📊 API Status</h3>
                     <p>✅ Authentication: Working</p>
                     <p>✅ Backend API: Connected</p>
-                    <p>✅ Screen Types: {screenTypes.length} available</p>
+                    <p>✅ Pool Types: {screenTypes.length} available</p>
                     <p>✅ Database: Connected</p>
                 </div>
             </div>
@@ -108,8 +108,8 @@ const DashboardPage = ({ user, onLogout }) => {
             <div style={{ marginTop: '30px', padding: '20px', backgroundColor: 'rgba(255, 243, 205, 0.1)', borderRadius: '8px', border: '1px solid rgba(255, 234, 167, 0.2)' }}>
                 <h3>🎯 Next Steps:</h3>
                 <ul>
-                    <li>Upload an image to generate homescreen visualizations</li>
-                    <li>Select from available screen types (Security, Entertainment, Smart Home)</li>
+                    <li>Upload an image to generate pool visualizations</li>
+                    <li>Select pool shape, surface finish, and features</li>
                     <li>View and manage your visualization results</li>
                     <li>Explore the admin panel at <a href="/admin" target="_blank" style={{ color: 'var(--gold-primary)' }}>/admin</a></li>
                 </ul>
