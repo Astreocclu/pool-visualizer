@@ -93,6 +93,6 @@ npx cypress open # E2E tests
 - **Storage:** AWS S3
 
 ## Project-Specific Notes
-- AI bounding boxes: AuditService should return [ymin, xmin, ymax, xmax] for overlay features
-- Mock pricing currently hardcoded at $1350/window - needs real pricing engine
-- Monday.com and Stripe integrations are stubs for now
+- This is a pools visualizer project - AI generates photorealistic pool designs in backyard photos
+- User selects pool shape, surface finish, deck material, and optional water features
+- AI prompts currently reference security screens (inherited from fork) - will be updated separately

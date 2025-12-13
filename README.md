@@ -1,49 +1,23 @@
-# Homescreen Project
+# Pools Visualizer
 
-## 🚀 Getting Started
+AI-powered pool visualization tool. Upload a photo of your backyard and see what different pool designs would look like.
 
-### Prerequisites
-- Python 3.8+
-- Node.js 16+
-- Google Cloud API Key (for Gemini)
+## Quick Start
 
-### Running the Application
-The application is designed to be served via Django on port 8000.
-
-1. **Build the Frontend**:
-   ```bash
-   cd frontend
-   npm run build:prod
-   cd ..
-   ```
-
-2. **Collect Static Files**:
-   ```bash
-   python3 manage.py collectstatic --noinput
-   ```
-
-3. **Start the Server**:
-   ```bash
-   python3 manage.py runserver
-   ```
-
-4. **Access the App**:
-   Open [http://localhost:8000](http://localhost:8000) in your browser.
-
-> [!NOTE]
-> **Current Workflow Status**:
-> We are currently testing a single screen type: **Lifestyle/Environmental**.
-> - **Supported Opacities**: 80%, 95%, 99%
-> - **Future**: Colors, Internal/External, and additional screen types will be added in subsequent phases.
-
-## Project Structure
-- `api/`: Django backend
-- `frontend/`: React frontend
-- `media/`: User uploads and generated images
-- `media/screen_references/`: Reference images for AI generation
-
-## Development
-To run tests:
 ```bash
-make test
+# Backend
+cd /home/reid/testhome/pools-visualizer
+source venv/bin/activate
+python manage.py runserver 8006
+
+# Frontend (new terminal)
+cd /home/reid/testhome/pools-visualizer/frontend
+npm start  # Runs on port 3006
 ```
+
+## Features
+
+- Upload backyard photos
+- Choose pool shape, surface finish, deck material
+- Optional water features (waterfall, fountain, infinity edge)
+- AI-generated photorealistic visualization
