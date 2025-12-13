@@ -3,18 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import { createVisualizationRequest } from '../services/api';
 import useVisualizationStore from '../store/visualizationStore';
+import PoolSizeShapeStep from '../components/UploadWizard/PoolSizeShapeStep';
+import FinishBuiltInsStep from '../components/UploadWizard/FinishBuiltInsStep';
+import DeckStep from '../components/UploadWizard/DeckStep';
+import WaterFeaturesStep from '../components/UploadWizard/WaterFeaturesStep';
+import FinishingStep from '../components/UploadWizard/FinishingStep';
 import Step4Upload from '../components/UploadWizard/Step4Upload';
-import Step2Scope from '../components/UploadWizard/Step2Scope';
-import Step3Customization from '../components/UploadWizard/Step3Customization';
 import Step5Review from '../components/UploadWizard/Step5Review';
 import './UploadPage.css';
 
 const UploadPage = () => {
   const [step, setStep] = useState(1);
+  const [selections, setSelections] = useState({
+    size: '',
+    shape: '',
+    finish: '',
+    tanning_ledge: false,
+    lounger_count: 0,
+    attached_spa: false,
+    deck_material: '',
+    deck_color: '',
+    water_features: [],
+    lighting: [],
+    landscaping: [],
+    furniture: [],
+  });
   const [formData, setFormData] = useState({
-    meshChoice: '12x12',
-    frameColor: 'Black',
-    meshColor: 'Black',
     image: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,23 +44,23 @@ const UploadPage = () => {
     setError(null);
     try {
       const data = new FormData();
-      // Include scope data
-      const scopePayload = {
-        pool_shape: scope.poolShape,
-        pool_surface: scope.poolSurface,
-        deck_material: scope.deckMaterial,
-        water_feature: scope.waterFeature,
+      // Include selections data
+      const selectionsPayload = {
+        size: selections.size,
+        shape: selections.shape,
+        finish: selections.finish,
+        tanning_ledge: selections.tanning_ledge,
+        lounger_count: selections.lounger_count,
+        attached_spa: selections.attached_spa,
+        deck_material: selections.deck_material,
+        deck_color: selections.deck_color,
+        water_features: selections.water_features,
+        lighting: selections.lighting,
+        landscaping: selections.landscaping,
+        furniture: selections.furniture,
       };
-      data.append('scope', JSON.stringify(scopePayload));
-      data.append('mesh_choice', formData.meshChoice);
-      data.append('frame_color', formData.frameColor);
-      data.append('mesh_color', formData.meshColor);
+      data.append('scope', JSON.stringify(selectionsPayload));
       data.append('original_image', formData.image);
-
-      // Legacy fields for compatibility
-      data.append('screen_type', 'window_fixed'); // Default
-      data.append('mesh_type', formData.meshChoice);
-      data.append('color', formData.frameColor);
 
       const response = await createVisualizationRequest(data);
       navigate(`/results/${response.id}`);
@@ -64,11 +78,11 @@ const UploadPage = () => {
         <div className="progress-track">
           <div
             className="progress-fill"
-            style={{ width: `${((step - 1) / 3) * 100}%` }}
+            style={{ width: `${((step - 1) / 6) * 100}%` }}
           />
         </div>
         <div className="steps-indicator">
-          {[1, 2, 3, 4].map(s => (
+          {[1, 2, 3, 4, 5, 6, 7].map(s => (
             <div
               key={s}
               className={`step-dot ${s <= step ? 'active' : ''} ${s === step ? 'current' : ''}`}
@@ -80,6 +94,46 @@ const UploadPage = () => {
       </div>
 
       {step === 1 && (
+        <PoolSizeShapeStep
+          selections={selections}
+          setSelections={setSelections}
+          nextStep={nextStep}
+          prevStep={prevStep}
+        />
+      )}
+      {step === 2 && (
+        <FinishBuiltInsStep
+          selections={selections}
+          setSelections={setSelections}
+          nextStep={nextStep}
+          prevStep={prevStep}
+        />
+      )}
+      {step === 3 && (
+        <DeckStep
+          selections={selections}
+          setSelections={setSelections}
+          nextStep={nextStep}
+          prevStep={prevStep}
+        />
+      )}
+      {step === 4 && (
+        <WaterFeaturesStep
+          selections={selections}
+          setSelections={setSelections}
+          nextStep={nextStep}
+          prevStep={prevStep}
+        />
+      )}
+      {step === 5 && (
+        <FinishingStep
+          selections={selections}
+          setSelections={setSelections}
+          nextStep={nextStep}
+          prevStep={prevStep}
+        />
+      )}
+      {step === 6 && (
         <Step4Upload
           formData={formData}
           setFormData={setFormData}
@@ -87,24 +141,10 @@ const UploadPage = () => {
           prevStep={prevStep}
         />
       )}
-      {step === 2 && (
-        <Step2Scope
-          nextStep={nextStep}
-          prevStep={prevStep}
-        />
-      )}
-      {step === 3 && (
-        <Step3Customization
-          formData={formData}
-          setFormData={setFormData}
-          nextStep={nextStep}
-          prevStep={prevStep}
-        />
-      )}
-      {step === 4 && (
+      {step === 7 && (
         <Step5Review
           formData={formData}
-          scope={scope}
+          selections={selections}
           prevStep={prevStep}
           handleSubmit={handleSubmit}
           isSubmitting={isSubmitting}
