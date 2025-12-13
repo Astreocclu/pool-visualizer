@@ -1,0 +1,54 @@
+7c19b08 2025-12-12 12:21 docs: update pools tenant prompts in deep dive doc
+2d12325 2025-12-12 12:19 feat(pools): update quality check to return JSON scores like boss tenant
+b7aad89 2025-12-12 12:13 feat(pools): update insertion prompts to be photorealistic with visual details
+dfea307 2025-12-12 12:09 feat(pools): update cleanup prompt to match boss quality
+d44969e 2025-12-11 20:27 feat(tenants): register roofs vertical
+0e8fb13 2025-12-11 20:26 feat(roofs): add roof visualizer vertical
+8abf6bf 2025-12-11 20:21 feat(tenants): register windows vertical
+fabda0b 2025-12-11 20:20 feat(windows): add AI prompts for window visualization
+b9059e4 2025-12-11 20:19 feat(windows): add WindowsTenantConfig
+d74dd15 2025-12-11 20:16 refactor(pipeline): use generic get_insertion_prompt interface
+636fc9e 2025-12-11 20:13 feat(pools): add generic get_insertion_prompt interface
+d5fc2fc 2025-12-11 20:11 feat(boss): add generic get_insertion_prompt interface
+7ce3a93 2025-12-11 19:52 docs: add multi-vertical support implementation plan
+d0a213b 2025-12-10 16:09 docs: create documentation index and archive README
+6169b6f 2025-12-10 16:08 fix(docs): update CLAUDE.md with correct versions and doc references
+4cb9876 2025-12-10 16:07 chore: archive PLAN.md and TODO.md, keep SESSION-NOTES.md active
+0881995 2025-12-10 16:05 chore: archive completed investigation files
+14b39d1 2025-12-10 16:04 chore: archive debug logs and chat exports
+0d3dc10 2025-12-10 16:02 chore: create docs/archive structure for stale documentation
+b25eed8 2025-12-10 14:56 test: add tests for prompt_service
+279dc0c 2025-12-10 14:54 test: add tests for pipeline_registry service
+077e886 2025-12-10 14:51 docs: add deprecation notices to V1 architecture docs
+a9d9389 2025-12-10 14:50 docs: update WHITE-LABEL-PLAN status to reflect implementation
+a7cf3ed 2025-12-10 14:48 docs: add V2 tenant architecture documentation
+cba60e5 2025-12-02 19:23 Update project docs and verify script
+fe95ba6 2025-12-02 17:18 Add lead capture, PDF generation, and fix image save pipeline
+c41e66a 2025-12-01 17:56 Restore thinking mode and add dimensional analysis for patio mullions
+5a41b80 2025-12-01 10:55 Add AI enhancement disclaimer to visualization results
+9631101 2025-11-30 13:39 Fix screen mounting description for technical accuracy
+612c1ff 2025-11-30 13:27 Move CRM badge to bottom of quote page
+e12f02b 2025-11-30 13:25 Fix CRM badge visibility on quote page header
+7cbb539 2025-11-30 13:24 Update warranty to 15 years and adjust pricing
+844c8ad 2025-11-30 13:19 Redesign QuoteSuccessPage as high-fidelity digital PDF document
+d780dfa 2025-11-30 13:15 Add Generate Quote workflow with success page
+3ffd565 2025-11-30 12:22 Redesign ProcessingScreen with navy/orange radar theme
+132507b 2025-11-30 01:42 Add compelling AI processing screen for demo
+acc8217 2025-11-30 01:24 Fix UI: toggle button, mesh cards, and review screen
+486008b 2025-11-30 00:44 Add project documentation and planning files
+5dd96ac 2025-11-29 19:22 Add CLAUDE.md with branch workflow documentation
+df6026a 2025-11-29 18:57 Implement Sealed Vault tenant registry refactor
+ca558fb 2025-11-28 17:49 Update Before/After UI, granular progress bar, and auto-login
+9d3aff8 2025-11-28 17:23 Fix double upload bug by stopping propagation of click event on file input
+ac775be 2025-11-28 16:41 Refactor ImageUploader to be fully controlled
+0460803 2025-11-28 13:05 Fix double upload bug by making ImageUploader controlled
+05d232b 2025-11-28 13:00 Revert pricing features and clean up state
+4ccfea9 2025-11-28 12:29 Revert pricing integration and update codebase
+2571d35 2025-11-27 17:26 fix: Door type branching bug in Step2Scope
+376c7e8 2025-11-27 17:17 feat: Implement scope-aware wizard and PromptFactory for layered visualizations
+c557f59 2025-11-27 16:06 Refactor: Fix silent AI failures and modularize Upload Wizard
+eed2eac 2025-11-27 15:12 feat: Add Geometric Intelligence upgrade for wide span detection
+163a264 2025-11-27 14:47 Refactor ScreenVisualizer: Remove build-out step, implement strict validation, fix paths, and cleanup GeminiProvider
+09e41d0 2025-11-27 14:11 Merge features, refactor visualizer, and fix AI processing
+18c64a5 2025-11-27 09:54 Refactor: Luxury Wizard, Database Updates, and PDF Generation
+8646f1b 2025-11-27 08:17 Initial commit
