@@ -1,6 +1,5 @@
 import React from 'react';
-import useVisualizerStore from '../../store/visualizerStore';
-import './WizardStep.css';
+import useVisualizationStore from '../../store/visualizationStore';
 
 const DECK_MATERIALS = [
     { id: 'travertine', name: 'Travertine', popular: true },
@@ -21,7 +20,7 @@ const DECK_COLORS = [
 ];
 
 function DeckStep() {
-    const { selections, setSelection } = useVisualizerStore();
+    const { selections, setSelection } = useVisualizationStore();
 
     const handleMaterialSelect = (materialId) => {
         setSelection('deck_material', materialId);
