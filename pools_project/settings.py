@@ -69,7 +69,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'homescreen_project.urls'
+ROOT_URLCONF = 'pools_project.urls'
 
 TEMPLATES = [
     {
@@ -86,7 +86,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'homescreen_project.wsgi.application'
+WSGI_APPLICATION = 'pools_project.wsgi.application'
 
 
 # Database
@@ -212,7 +212,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'homescreen.log'),
+            'filename': os.path.join(BASE_DIR, 'logs', 'pools.log'),
             'formatter': 'verbose',
         },
     },
@@ -241,7 +241,7 @@ LOGGING = {
 }
 
 # Tenant Configuration
-ACTIVE_TENANT = os.environ.get('ACTIVE_TENANT', 'boss')
+ACTIVE_TENANT = os.environ.get('ACTIVE_TENANT', 'pools')
 
 # Feature flag for gradual rollout
 USE_TENANT_REGISTRY = os.environ.get('USE_TENANT_REGISTRY', 'true').lower() == 'true'
