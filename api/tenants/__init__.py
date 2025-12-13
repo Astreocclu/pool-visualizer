@@ -13,6 +13,7 @@ from django.conf import settings
 
 from .base import BaseTenantConfig
 from .boss.config import BossTenantConfig
+from .pools.config import PoolsTenantConfig
 
 logger = logging.getLogger(__name__)
 
@@ -83,3 +84,4 @@ def clear_cache() -> None:
 
 # Auto-register Boss tenant on module load
 register_tenant(BossTenantConfig())
+register_tenant(PoolsTenantConfig())
