@@ -198,6 +198,12 @@ class PoolsTenantConfig(BaseTenantConfig):
     def get_frame_color_choices(self):
         return []  # Not applicable to pools
 
+    def get_mesh_color_choices(self):
+        return []  # Not applicable to pools
+
+    def get_opacity_choices(self):
+        return []  # Not applicable to pools
+
 
 def get_config():
     """Return config dict for API responses. Excludes pricing data."""
