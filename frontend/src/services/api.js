@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Use relative URL in production, absolute URL in development
-const API_PORT = process.env.REACT_APP_API_PORT || '8000';
+const API_PORT = process.env.REACT_APP_API_PORT || '8006';
 const API_BASE_URL = process.env.NODE_ENV === 'production'
   ? '/api'
   : `http://127.0.0.1:${API_PORT}/api`;
