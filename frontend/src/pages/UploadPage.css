@@ -659,3 +659,565 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
 }
+
+/* ================================================
+   POOLS WIZARD SPECIFIC STYLES
+   ================================================ */
+
+/* Pool Size Cards */
+.size-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.size-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.size-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-3px);
+    border-color: var(--gold-muted);
+}
+
+.size-card.selected {
+    background: rgba(0, 119, 182, 0.15);
+    border-color: #0077b6;
+    box-shadow: 0 0 20px rgba(0, 119, 182, 0.2);
+}
+
+.size-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--white);
+    font-size: 1.25rem;
+}
+
+.size-dimensions {
+    color: #00b4d8;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.size-description {
+    color: var(--slate);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+/* Popular Badge */
+.popular-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: linear-gradient(135deg, #0077b6 0%, #00b4d8 100%);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.35rem 0.75rem;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 119, 182, 0.3);
+}
+
+/* Pool Shape Grid */
+.shape-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.shape-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.shape-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--gold-muted);
+}
+
+.shape-card.selected {
+    background: rgba(0, 119, 182, 0.15);
+    border-color: #0077b6;
+}
+
+.shape-icon {
+    color: #00b4d8;
+    margin-bottom: 0.5rem;
+}
+
+.shape-card.selected .shape-icon {
+    color: #0077b6;
+}
+
+.shape-card span {
+    color: var(--white);
+    font-size: 0.9rem;
+    display: block;
+}
+
+/* Interior Finish Cards */
+.finish-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.finish-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+}
+
+.finish-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--gold-muted);
+}
+
+.finish-card.selected {
+    background: rgba(0, 119, 182, 0.15);
+    border-color: #0077b6;
+}
+
+.water-color-swatch {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.finish-info h4 {
+    margin: 0 0 0.25rem 0;
+    color: var(--white);
+    font-size: 1rem;
+}
+
+.finish-info p {
+    margin: 0;
+    color: var(--slate);
+    font-size: 0.85rem;
+}
+
+/* Built-in Feature Toggles */
+.feature-toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.feature-toggle {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.feature-toggle.active {
+    background: rgba(0, 119, 182, 0.1);
+    border-color: rgba(0, 119, 182, 0.3);
+}
+
+.feature-info h4 {
+    margin: 0 0 0.25rem 0;
+    color: var(--white);
+    font-size: 1.1rem;
+}
+
+.feature-info p {
+    margin: 0;
+    color: var(--slate);
+    font-size: 0.9rem;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    width: 56px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.toggle-switch.active {
+    background: #0077b6;
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.active::after {
+    transform: translateX(28px);
+}
+
+/* Lounger Count Selector */
+.lounger-selector {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    margin-top: -0.5rem;
+    margin-left: 2rem;
+}
+
+.lounger-selector label {
+    display: block;
+    color: var(--slate);
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.lounger-selector select {
+    background: var(--primary-navy);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--white);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    max-width: 200px;
+}
+
+/* Deck Material & Color */
+.deck-material-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.deck-material-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.deck-material-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--gold-muted);
+}
+
+.deck-material-card.selected {
+    background: rgba(0, 119, 182, 0.15);
+    border-color: #0077b6;
+}
+
+.deck-material-card span {
+    color: var(--white);
+    font-size: 1rem;
+}
+
+.deck-color-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.deck-color-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.deck-color-chip:hover .color-circle {
+    transform: scale(1.1);
+}
+
+.deck-color-chip.selected .color-circle {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 3px var(--primary-navy), 0 0 0 5px #0077b6;
+}
+
+.color-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.deck-color-chip span {
+    color: var(--slate);
+    font-size: 0.85rem;
+}
+
+.deck-color-chip.selected span {
+    color: var(--white);
+    font-weight: 600;
+}
+
+/* Water Features Multi-select */
+.water-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+}
+
+.water-feature-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.water-feature-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--gold-muted);
+}
+
+.water-feature-card.selected {
+    background: rgba(0, 119, 182, 0.15);
+    border-color: #0077b6;
+}
+
+.water-feature-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.water-feature-card h4 {
+    margin: 0;
+    color: var(--white);
+    font-size: 1rem;
+}
+
+.feature-check {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 24px;
+    height: 24px;
+    background: #0077b6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.max-features-hint {
+    text-align: center;
+    color: var(--slate);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+/* Finishing Options */
+.finishing-section {
+    margin-bottom: 2rem;
+}
+
+.finishing-section h3 {
+    color: var(--white);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.radio-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.radio-option {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.radio-option:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--gold-muted);
+}
+
+.radio-option.selected {
+    background: rgba(0, 119, 182, 0.1);
+    border-color: #0077b6;
+}
+
+.radio-circle {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--light-slate);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.radio-option.selected .radio-circle {
+    border-color: #0077b6;
+}
+
+.radio-circle-inner {
+    width: 10px;
+    height: 10px;
+    background: #0077b6;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.radio-option.selected .radio-circle-inner {
+    opacity: 1;
+}
+
+.radio-option span {
+    color: var(--white);
+    font-size: 0.95rem;
+}
+
+/* Review Sections */
+.review-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.review-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.review-section-title {
+    color: #00b4d8;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+}
+
+.review-image-preview {
+    margin-top: 1rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+}
+
+.review-image-preview img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Optional Section Hint */
+.optional-hint {
+    text-align: center;
+    color: var(--slate);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+/* Section Divider */
+.section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    margin: 2rem 0;
+}
+
+/* Pool Primary Color Override */
+.pools-wizard .btn-next,
+.pools-wizard .btn-submit {
+    background: linear-gradient(135deg, #0077b6 0%, #00b4d8 100%);
+    color: white;
+}
+
+.pools-wizard .btn-next:hover,
+.pools-wizard .btn-submit:hover {
+    box-shadow: 0 6px 20px rgba(0, 119, 182, 0.4);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .size-card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .shape-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .finish-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .water-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .deck-color-grid {
+        gap: 1rem;
+    }
+
+    .color-circle {
+        width: 48px;
+        height: 48px;
+    }
+}
