@@ -175,6 +175,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
     'http://localhost:3005',  # Dec 2 stable test
     'http://127.0.0.1:3005',
+    'http://localhost:3006',  # Pools visualizer
+    'http://127.0.0.1:3006',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
