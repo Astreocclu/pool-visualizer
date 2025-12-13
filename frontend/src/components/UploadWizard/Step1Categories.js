@@ -14,15 +14,15 @@ const Step1Categories = ({ formData, setFormData, nextStep }) => {
     return (
         <div className="wizard-step fade-in">
             <div className="step-header">
-                <h2>What are we screening?</h2>
+                <h2>What pool features do you want?</h2>
                 <p className="step-subtitle">Select all that apply to your project</p>
             </div>
 
             <div className="card-grid">
                 {[
-                    { id: 'Window', icon: Maximize, label: 'Windows' },
-                    { id: 'Door', icon: DoorOpen, label: 'Doors' },
-                    { id: 'Patio', icon: LayoutTemplate, label: 'Patio / Sliding' }
+                    { id: 'Pool', icon: Maximize, label: 'Pool' },
+                    { id: 'Deck', icon: LayoutTemplate, label: 'Pool Deck' },
+                    { id: 'WaterFeature', icon: DoorOpen, label: 'Water Feature' }
                 ].map(cat => {
                     const Icon = cat.icon;
                     const isSelected = formData.categories.includes(cat.id);
