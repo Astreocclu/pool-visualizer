@@ -1,214 +1,124 @@
 import { useState } from 'react';
-import { ArrowLeft, Home, Shield, DoorOpen, Plus, Minus } from 'lucide-react';
+import { ArrowLeft, Droplets, Square, Palette, Waves } from 'lucide-react';
 import useVisualizationStore from '../../store/visualizationStore';
 
 const Step2Scope = ({ nextStep, prevStep }) => {
     const { scope, setScope } = useVisualizationStore();
-    const [subStep, setSubStep] = useState('patio');
+    const [subStep, setSubStep] = useState('shape');
 
-    const handleYes = (key, value = true) => {
+    const selectOption = (key, value, next) => {
         setScope(key, value);
-        // Initialize counts to 1 when user says yes
-        if (key === 'hasWindows') {
-            setScope('windowCount', 1);
-        }
-        if (key === 'hasDoors') {
-            setScope('doorCount', 1);
-        }
-        advanceSubStep(key, true);
-    };
-
-    const handleNo = (key) => {
-        setScope(key, false);
-        if (key === 'hasDoors') {
-            setScope('doorType', null);
-            setScope('doorCount', 0);
-        }
-        if (key === 'hasWindows') {
-            setScope('windowCount', 0);
-        }
-        advanceSubStep(key, false);
-    };
-
-    const advanceSubStep = (lastKey, lastValue) => {
-        if (subStep === 'patio') {
-            setSubStep('windows');
-        } else if (subStep === 'windows') {
-            if (lastKey === 'hasWindows' && lastValue === true) {
-                setSubStep('windowCount');
-            } else {
-                setSubStep('doors');
-            }
-        } else if (subStep === 'windowCount') {
-            setSubStep('doors');
-        } else if (subStep === 'doors') {
-            if (lastKey === 'hasDoors' && lastValue === true) {
-                setSubStep('doorType');
-            } else {
-                nextStep();
-            }
-        } else if (subStep === 'doorType') {
-            setSubStep('doorCount');
-        } else if (subStep === 'doorCount') {
+        if (next === 'done') {
             nextStep();
-        }
-    };
-
-    const selectDoorType = (type) => {
-        setScope('doorType', type);
-        setSubStep('doorCount');
-    };
-
-    const incrementCount = (key) => {
-        const current = scope[key] || 0;
-        setScope(key, Math.min(current + 1, 20));
-    };
-
-    const decrementCount = (key) => {
-        const current = scope[key] || 0;
-        setScope(key, Math.max(current - 1, 1));
-    };
-
-    const confirmCount = (key) => {
-        if (key === 'windowCount') {
-            setSubStep('doors');
-        } else if (key === 'doorCount') {
-            nextStep();
+        } else {
+            setSubStep(next);
         }
     };
 
     return (
         <div className="wizard-step fade-in">
-            {/* PATIO */}
-            {subStep === 'patio' && (
+            {/* POOL SHAPE */}
+            {subStep === 'shape' && (
                 <>
                     <div className="step-header">
-                        <Home size={48} className="step-icon" />
-                        <h2>Do you have a covered patio or outdoor area?</h2>
-                        <p className="step-subtitle">We can enclose it with security screens</p>
-                    </div>
-                    <div className="choice-cards">
-                        <button className="choice-card yes" onClick={() => handleYes('hasPatio')}>
-                            <Shield size={32} />
-                            <span>Yes, enclose it</span>
-                        </button>
-                        <button className="choice-card no" onClick={() => handleNo('hasPatio')}>
-                            <span>No thanks</span>
-                        </button>
-                    </div>
-                </>
-            )}
-
-            {/* WINDOWS */}
-            {subStep === 'windows' && (
-                <>
-                    <div className="step-header">
-                        <Shield size={48} className="step-icon" />
-                        <h2>Do you want security screens on your windows?</h2>
-                        <p className="step-subtitle">Our screens mount over your windows, providing protection without blocking the view</p>
-                    </div>
-                    <div className="choice-cards">
-                        <button className="choice-card yes" onClick={() => handleYes('hasWindows')}>
-                            <Shield size={32} />
-                            <span>Yes, secure them</span>
-                        </button>
-                        <button className="choice-card no" onClick={() => handleNo('hasWindows')}>
-                            <span>No thanks</span>
-                        </button>
-                    </div>
-                </>
-            )}
-
-            {/* WINDOW COUNT */}
-            {subStep === 'windowCount' && (
-                <>
-                    <div className="step-header">
-                        <Shield size={48} className="step-icon" />
-                        <h2>How many windows?</h2>
-                        <p className="step-subtitle">Count the windows you want to secure</p>
-                    </div>
-                    <div className="count-selector">
-                        <button className="count-btn" onClick={() => decrementCount('windowCount')} disabled={scope.windowCount <= 1}>
-                            <Minus size={24} />
-                        </button>
-                        <span className="count-display">{scope.windowCount || 1}</span>
-                        <button className="count-btn" onClick={() => incrementCount('windowCount')}>
-                            <Plus size={24} />
-                        </button>
-                    </div>
-                    <button className="btn-primary" onClick={() => confirmCount('windowCount')}>
-                        Continue
-                    </button>
-                </>
-            )}
-
-            {/* DOORS */}
-            {subStep === 'doors' && (
-                <>
-                    <div className="step-header">
-                        <DoorOpen size={48} className="step-icon" />
-                        <h2>Do you need security doors?</h2>
-                        <p className="step-subtitle">Heavy-duty protection for your entryways</p>
-                    </div>
-                    <div className="choice-cards">
-                        <button className="choice-card yes" onClick={() => handleYes('hasDoors')}>
-                            <Shield size={32} />
-                            <span>Yes, I need doors</span>
-                        </button>
-                        <button className="choice-card no" onClick={() => handleNo('hasDoors')}>
-                            <span>No thanks</span>
-                        </button>
-                    </div>
-                </>
-            )}
-
-            {/* DOOR TYPE */}
-            {subStep === 'doorType' && (
-                <>
-                    <div className="step-header">
-                        <DoorOpen size={48} className="step-icon" />
-                        <h2>What type of door?</h2>
-                        <p className="step-subtitle">Choose the style that fits your home</p>
+                        <Square size={48} className="step-icon" />
+                        <h2>What pool shape do you want?</h2>
+                        <p className="step-subtitle">Choose the shape for your pool</p>
                     </div>
                     <div className="choice-cards vertical">
-                        <button className="choice-card" onClick={() => selectDoorType('security_door')}>
-                            <span>Standard Security Door</span>
+                        <button className="choice-card" onClick={() => selectOption('poolShape', 'rectangle', 'surface')}>
+                            <span>Rectangle</span>
                         </button>
-                        <button className="choice-card" onClick={() => selectDoorType('french_door')}>
-                            <span>French Doors (Double)</span>
+                        <button className="choice-card" onClick={() => selectOption('poolShape', 'freeform', 'surface')}>
+                            <span>Freeform / Organic</span>
                         </button>
-                        <button className="choice-card" onClick={() => selectDoorType('sliding_door')}>
-                            <span>Sliding Door</span>
+                        <button className="choice-card" onClick={() => selectOption('poolShape', 'kidney', 'surface')}>
+                            <span>Kidney</span>
+                        </button>
+                        <button className="choice-card" onClick={() => selectOption('poolShape', 'lshaped', 'surface')}>
+                            <span>L-Shaped</span>
                         </button>
                     </div>
                 </>
             )}
 
-            {/* DOOR COUNT */}
-            {subStep === 'doorCount' && (
+            {/* POOL SURFACE */}
+            {subStep === 'surface' && (
                 <>
                     <div className="step-header">
-                        <DoorOpen size={48} className="step-icon" />
-                        <h2>How many doors?</h2>
-                        <p className="step-subtitle">Count the doors you want to secure</p>
+                        <Palette size={48} className="step-icon" />
+                        <h2>What pool surface finish?</h2>
+                        <p className="step-subtitle">This affects the water color appearance</p>
                     </div>
-                    <div className="count-selector">
-                        <button className="count-btn" onClick={() => decrementCount('doorCount')} disabled={scope.doorCount <= 1}>
-                            <Minus size={24} />
+                    <div className="choice-cards vertical">
+                        <button className="choice-card" onClick={() => selectOption('poolSurface', 'white_plaster', 'deck')}>
+                            <span>White Plaster (Light Blue Water)</span>
                         </button>
-                        <span className="count-display">{scope.doorCount || 1}</span>
-                        <button className="count-btn" onClick={() => incrementCount('doorCount')}>
-                            <Plus size={24} />
+                        <button className="choice-card" onClick={() => selectOption('poolSurface', 'pebble_tec_blue', 'deck')}>
+                            <span>Pebble Tec Blue (Deep Blue Water)</span>
+                        </button>
+                        <button className="choice-card" onClick={() => selectOption('poolSurface', 'pebble_tec_midnight', 'deck')}>
+                            <span>Pebble Tec Midnight (Dark Blue Water)</span>
                         </button>
                     </div>
-                    <button className="btn-primary" onClick={() => confirmCount('doorCount')}>
-                        Continue
-                    </button>
+                </>
+            )}
+
+            {/* DECK MATERIAL */}
+            {subStep === 'deck' && (
+                <>
+                    <div className="step-header">
+                        <Droplets size={48} className="step-icon" />
+                        <h2>What deck material?</h2>
+                        <p className="step-subtitle">Choose the surrounding deck finish</p>
+                    </div>
+                    <div className="choice-cards vertical">
+                        <button className="choice-card" onClick={() => selectOption('deckMaterial', 'travertine', 'waterFeature')}>
+                            <span>Travertine</span>
+                        </button>
+                        <button className="choice-card" onClick={() => selectOption('deckMaterial', 'concrete', 'waterFeature')}>
+                            <span>Stamped Concrete</span>
+                        </button>
+                        <button className="choice-card" onClick={() => selectOption('deckMaterial', 'pavers', 'waterFeature')}>
+                            <span>Pavers</span>
+                        </button>
+                        <button className="choice-card" onClick={() => selectOption('deckMaterial', 'wood', 'waterFeature')}>
+                            <span>Wood Deck</span>
+                        </button>
+                    </div>
+                </>
+            )}
+
+            {/* WATER FEATURE */}
+            {subStep === 'waterFeature' && (
+                <>
+                    <div className="step-header">
+                        <Waves size={48} className="step-icon" />
+                        <h2>Add a water feature?</h2>
+                        <p className="step-subtitle">Optional enhancement</p>
+                    </div>
+                    <div className="choice-cards vertical">
+                        <button className="choice-card" onClick={() => selectOption('waterFeature', 'none', 'done')}>
+                            <span>No Water Feature</span>
+                        </button>
+                        <button className="choice-card" onClick={() => selectOption('waterFeature', 'waterfall', 'done')}>
+                            <span>Waterfall</span>
+                        </button>
+                        <button className="choice-card" onClick={() => selectOption('waterFeature', 'fountain', 'done')}>
+                            <span>Fountain Jets</span>
+                        </button>
+                        <button className="choice-card" onClick={() => selectOption('waterFeature', 'infinity_edge', 'done')}>
+                            <span>Infinity Edge</span>
+                        </button>
+                    </div>
                 </>
             )}
 
             <div className="wizard-actions">
-                <button className="btn-back" onClick={prevStep}>
+                <button className="btn-back" onClick={subStep === 'shape' ? prevStep : () => {
+                    const prevSteps = { surface: 'shape', deck: 'surface', waterFeature: 'deck' };
+                    setSubStep(prevSteps[subStep] || 'shape');
+                }}>
                     <ArrowLeft size={18} /> Back
                 </button>
             </div>
