@@ -52,11 +52,28 @@ const initialState = {
     hasNext: false,
     hasPrev: false
   },
-  scope: {
-    poolShape: null,
-    poolSurface: null,
-    deckMaterial: null,
-    waterFeature: null,
+  selections: {
+    // Screen 1: Size & Shape
+    size: 'classic',
+    shape: 'rectangle',
+
+    // Screen 2: Finish & Built-ins
+    finish: 'pebble_blue',
+    tanning_ledge: true,
+    lounger_count: 2,
+    attached_spa: false,
+
+    // Screen 3: Deck
+    deck_material: 'travertine',
+    deck_color: 'cream',
+
+    // Screen 4: Water Features
+    water_features: [],  // Array of feature IDs, max 2
+
+    // Screen 5: Finishing Touches
+    lighting: 'none',
+    landscaping: 'none',
+    furniture: 'none',
   }
 };
 
@@ -223,14 +240,20 @@ const useVisualizationStore = create(
         set({ filters: initialState.filters });
       },
 
-      setScope: (key, value) => {
+      setSelection: (key, value) => {
         set(state => ({
-          scope: { ...state.scope, [key]: value }
+          selections: { ...state.selections, [key]: value }
         }));
       },
 
-      resetScope: () => {
-        set({ scope: initialState.scope });
+      setSelections: (updates) => {
+        set(state => ({
+          selections: { ...state.selections, ...updates }
+        }));
+      },
+
+      resetSelections: () => {
+        set({ selections: initialState.selections });
       },
 
       clearError: () => {
