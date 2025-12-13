@@ -2,18 +2,6 @@ import React from 'react';
 import { ArrowLeft, Shield } from 'lucide-react';
 
 const Step5Review = ({ formData, scope, prevStep, handleSubmit, isSubmitting, error }) => {
-    // Build scope summary
-    const scopeParts = [];
-    if (scope?.hasPatio) scopeParts.push('Patio');
-    if (scope?.hasWindows) scopeParts.push('Windows');
-    if (scope?.hasDoors) {
-        const doorTypeLabel = scope.doorType === 'french_door' ? 'French Doors' :
-            scope.doorType === 'sliding_door' ? 'Sliding Door' :
-                'Security Door';
-        scopeParts.push(`Doors (${doorTypeLabel})`);
-    }
-    const scopeSummary = scopeParts.length > 0 ? scopeParts.join(' + ') : 'None selected';
-
     return (
         <div className="wizard-step fade-in">
             <div className="step-header">
@@ -22,10 +10,30 @@ const Step5Review = ({ formData, scope, prevStep, handleSubmit, isSubmitting, er
             </div>
 
             <div className="review-card">
-                <div className="review-item">
-                    <span className="label">Scope</span>
-                    <span className="value">{scopeSummary}</span>
-                </div>
+                {scope.poolShape && (
+                    <div className="review-item">
+                        <span className="label">Pool Shape</span>
+                        <span className="value">{scope.poolShape}</span>
+                    </div>
+                )}
+                {scope.poolSurface && (
+                    <div className="review-item">
+                        <span className="label">Surface Finish</span>
+                        <span className="value">{scope.poolSurface}</span>
+                    </div>
+                )}
+                {scope.deckMaterial && (
+                    <div className="review-item">
+                        <span className="label">Deck Material</span>
+                        <span className="value">{scope.deckMaterial}</span>
+                    </div>
+                )}
+                {scope.waterFeature && scope.waterFeature !== 'none' && (
+                    <div className="review-item">
+                        <span className="label">Water Feature</span>
+                        <span className="value">{scope.waterFeature}</span>
+                    </div>
+                )}
                 <div className="review-item">
                     <span className="label">Mesh Type</span>
                     <span className="value">{formData.meshChoice.replace('_', ' ')}</span>
