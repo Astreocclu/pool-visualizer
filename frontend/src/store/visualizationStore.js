@@ -53,12 +53,10 @@ const initialState = {
     hasPrev: false
   },
   scope: {
-    hasPatio: false,
-    hasWindows: true,
-    hasDoors: false,
-    doorType: null,
-    windowCount: 0,
-    doorCount: 0
+    poolShape: null,
+    poolSurface: null,
+    deckMaterial: null,
+    waterFeature: null,
   }
 };
 
