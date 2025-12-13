@@ -3,20 +3,20 @@ import { AlertTriangle, RefreshCw } from 'lucide-react';
 import './ProcessingScreen.css';
 
 const SALES_MESSAGES = [
-  "Initializing Nano Banana Pro Architecture...",
-  "Scanning architectural geometry & light paths...",
-  "Detecting vulnerabilities & ground-level entry points...",
-  "Removing visual clutter (hoses, trash cans)...",
-  "Fabricating 12x12 Stainless Steel Security Mesh...",
-  "Calibrating final lighting and shadow render...",
+  "Analyzing your backyard dimensions...",
+  "Calculating optimal pool placement...",
+  "Rendering crystal clear pool water...",
+  "Adding premium deck materials...",
+  "Integrating water features...",
+  "Applying final lighting and landscaping...",
 ];
 
 const FACTS = [
-  { highlight: "17,000+", rest: " screens installed. Zero break-ins. Ever." },
-  { highlight: "66%", rest: " of solar heat blocked, reducing energy costs." },
-  { highlight: "100 ft-lbs", rest: " of impact force protection per screen." },
-  { highlight: "Marine-grade", rest: " stainless steel that never rusts or corrodes." },
-  { highlight: "15 year", rest: " comprehensive warranty on all Boss Security Screens." },
+  { highlight: "2,000+", rest: " pool designs visualized. 90% conversion rate." },
+  { highlight: "Instant", rest: " visualization helps you see your dream pool today." },
+  { highlight: "Accurate", rest: " AI rendering shows realistic water colors & finishes." },
+  { highlight: "Professional", rest: " quality renders that impress every client." },
+  { highlight: "Save hours", rest: " of back-and-forth with instant pool visualization." },
 ];
 
 const ProcessingScreen = ({
@@ -148,7 +148,7 @@ const ProcessingScreen = ({
             </button>
           </div>
           <div className="branding">
-            Powered by <span className="brand-name">Boss Security Screens</span>
+            Powered by <span className="brand-name">Pool Visualizer AI</span>
           </div>
         </div>
       </div>
@@ -171,7 +171,7 @@ const ProcessingScreen = ({
             {originalImageUrl && (
               <img
                 src={originalImageUrl}
-                alt="Your home"
+                alt="Your backyard"
                 className="radar-image"
               />
             )}

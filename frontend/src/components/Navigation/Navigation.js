@@ -4,8 +4,8 @@ import { Button } from '../Common';
 import useAuthStore from '../../store/authStore';
 import './Navigation.css';
 
-const Navigation = ({ 
-  title = 'Homescreen Visualizer',
+const Navigation = ({
+  title = 'Pool Visualizer',
   showUserMenu = true,
   className = '' 
 }) => {
