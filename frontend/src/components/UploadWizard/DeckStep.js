@@ -1,4 +1,4 @@
-import React from 'react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import useVisualizationStore from '../../store/visualizationStore';
 
 const DECK_MATERIALS = [
@@ -11,71 +11,75 @@ const DECK_MATERIALS = [
 ];
 
 const DECK_COLORS = [
-    { id: 'cream', name: 'Cream' },
-    { id: 'tan', name: 'Tan' },
-    { id: 'gray', name: 'Gray' },
-    { id: 'terracotta', name: 'Terracotta' },
-    { id: 'brown', name: 'Brown' },
-    { id: 'natural', name: 'Natural Stone' },
+    { id: 'cream', name: 'Cream', hex: '#F5F5DC' },
+    { id: 'tan', name: 'Tan', hex: '#D2B48C' },
+    { id: 'gray', name: 'Gray', hex: '#808080' },
+    { id: 'terracotta', name: 'Terracotta', hex: '#E2725B' },
+    { id: 'brown', name: 'Brown', hex: '#8B4513' },
+    { id: 'natural', name: 'Natural Stone', hex: '#C4B7A6' },
 ];
 
-function DeckStep() {
+const DeckStep = ({ nextStep, prevStep }) => {
     const { selections, setSelection } = useVisualizationStore();
 
-    const handleMaterialSelect = (materialId) => {
-        setSelection('deck_material', materialId);
-    };
-
-    const handleColorSelect = (colorId) => {
-        setSelection('deck_color', colorId);
-    };
-
     return (
-        <div className="wizard-step">
-            <h2 className="wizard-step-title">Choose Your Deck</h2>
-            <p className="wizard-step-description">
-                Select the material and color for your pool deck
-            </p>
-
-            <div className="wizard-section">
-                <h3 className="wizard-section-title">Deck Material</h3>
-                <div className="wizard-options">
-                    {DECK_MATERIALS.map((material) => (
-                        <button
-                            key={material.id}
-                            className={`wizard-option ${
-                                selections.deck_material === material.id ? 'selected' : ''
-                            }`}
-                            onClick={() => handleMaterialSelect(material.id)}
-                        >
-                            {material.name}
-                            {material.popular && (
-                                <span className="wizard-badge">Popular</span>
-                            )}
-                        </button>
-                    ))}
-                </div>
+        <div className="wizard-step fade-in">
+            <div className="step-header">
+                <h2>Deck Material & Color</h2>
+                <p className="step-subtitle">Select the material and color for your pool deck</p>
             </div>
 
-            <div className="wizard-section">
-                <h3 className="wizard-section-title">Deck Color</h3>
-                <div className="wizard-options">
-                    {DECK_COLORS.map((color) => (
-                        <button
-                            key={color.id}
-                            className={`wizard-option ${
-                                selections.deck_color === color.id ? 'selected' : ''
-                            }`}
-                            onClick={() => handleColorSelect(color.id)}
+            <section>
+                <h3>Deck Material</h3>
+                <div className="deck-material-grid">
+                    {DECK_MATERIALS.map(material => (
+                        <div
+                            key={material.id}
+                            className={`deck-material-card ${selections.deck_material === material.id ? 'selected' : ''}`}
+                            onClick={() => setSelection('deck_material', material.id)}
                         >
-                            <span className={`color-chip deck-${color.id}`}></span>
-                            {color.name}
-                        </button>
+                            {material.popular && <span className="popular-badge">Popular</span>}
+                            <span>{material.name}</span>
+                        </div>
                     ))}
                 </div>
+            </section>
+
+            <section>
+                <h3>Deck Color</h3>
+                <div className="deck-color-grid">
+                    {DECK_COLORS.map(color => (
+                        <div
+                            key={color.id}
+                            className={`deck-color-chip ${selections.deck_color === color.id ? 'selected' : ''}`}
+                            onClick={() => setSelection('deck_color', color.id)}
+                        >
+                            <div
+                                className="color-circle"
+                                style={{ backgroundColor: color.hex }}
+                            />
+                            <span>{color.name}</span>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            <div className="wizard-actions">
+                {prevStep && (
+                    <button className="btn-back" onClick={prevStep}>
+                        <ArrowLeft size={18} /> Back
+                    </button>
+                )}
+                <button
+                    className="btn-next"
+                    onClick={nextStep}
+                    disabled={!selections.deck_material || !selections.deck_color}
+                >
+                    Next Step <ArrowRight size={18} />
+                </button>
             </div>
         </div>
     );
-}
+};
 
 export default DeckStep;

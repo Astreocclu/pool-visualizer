@@ -1194,6 +1194,306 @@
     box-shadow: 0 6px 20px rgba(0, 119, 182, 0.4);
 }
 
+/* ================================================
+   ADDITIONAL WIZARD STEP STYLES
+   ================================================ */
+
+/* Helper Text */
+.helper-text {
+    color: var(--slate);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+/* Size Grid (Pool Size Step) */
+.size-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.size-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.size-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--gold-muted);
+}
+
+.size-card.selected {
+    background: rgba(0, 119, 182, 0.15);
+    border-color: #0077b6;
+}
+
+.size-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--white);
+    font-size: 1.1rem;
+}
+
+.size-card .dimensions {
+    color: #00b4d8;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.size-card .description {
+    color: var(--slate);
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* Finish Grid (Finish & Built-ins Step) */
+.finish-card h4 {
+    margin: 0 0 0.25rem 0;
+    color: var(--white);
+    font-size: 0.95rem;
+}
+
+.finish-card .water-color {
+    color: #00b4d8;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+/* Built-in Options */
+.builtin-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.option-row {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.option-row.sub-option {
+    margin-left: 2rem;
+    background: rgba(0, 119, 182, 0.05);
+}
+
+.option-label h4 {
+    margin: 0 0 0.25rem 0;
+    color: var(--white);
+    font-size: 1rem;
+}
+
+.option-label p {
+    margin: 0;
+    color: var(--slate);
+    font-size: 0.85rem;
+}
+
+.option-dropdown {
+    background: var(--primary-navy);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* Toggle Switch (for checkboxes styled as switches) */
+label.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 56px;
+    height: 28px;
+}
+
+label.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+label.toggle-switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    transition: 0.3s;
+    border-radius: 28px;
+}
+
+label.toggle-switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+label.toggle-switch input:checked + .slider {
+    background: #0077b6;
+}
+
+label.toggle-switch input:checked + .slider:before {
+    transform: translateX(28px);
+}
+
+/* Feature Grid (Water Features Step) */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.feature-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--gold-muted);
+}
+
+.feature-card.selected {
+    background: rgba(0, 119, 182, 0.15);
+    border-color: #0077b6;
+}
+
+.feature-card.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.feature-card h4 {
+    margin: 0;
+    color: var(--white);
+    font-size: 0.95rem;
+}
+
+.feature-checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--light-slate);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.feature-card.selected .feature-checkbox {
+    background: #0077b6;
+    border-color: #0077b6;
+}
+
+.feature-checkbox .checkmark {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* Radio Group (Finishing Step) */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+label.radio-option {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+label.radio-option:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--gold-muted);
+}
+
+label.radio-option.selected {
+    background: rgba(0, 119, 182, 0.1);
+    border-color: #0077b6;
+}
+
+label.radio-option input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--light-slate);
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+label.radio-option input[type="radio"]:checked {
+    border-color: #0077b6;
+}
+
+label.radio-option input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: #0077b6;
+    border-radius: 50%;
+}
+
+.radio-label {
+    color: var(--white);
+    font-size: 0.95rem;
+}
+
+/* Section headers inside wizard steps */
+.wizard-step section {
+    margin-bottom: 2rem;
+}
+
+.wizard-step section h3 {
+    color: var(--white);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .size-card-grid {
