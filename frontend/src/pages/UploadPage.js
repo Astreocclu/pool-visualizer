@@ -32,22 +32,16 @@ const UploadPage = () => {
       const data = new FormData();
       // Include scope data
       const scopePayload = {
-        windows: scope.hasWindows,
-        doors: scope.hasDoors,
-        patio: scope.hasPatio,
-        door_type: scope.doorType  // e.g., 'security_door', 'french_door', 'sliding_door'
+        pool_shape: scope.poolShape,
+        pool_surface: scope.poolSurface,
+        deck_material: scope.deckMaterial,
+        water_feature: scope.waterFeature,
       };
       data.append('scope', JSON.stringify(scopePayload));
       data.append('mesh_choice', formData.meshChoice);
       data.append('frame_color', formData.frameColor);
       data.append('mesh_color', formData.meshColor);
       data.append('original_image', formData.image);
-
-      // Opening counts for pricing
-      data.append('window_count', scope.windowCount || 0);
-      data.append('door_count', scope.doorCount || 0);
-      data.append('door_type', scope.doorType || '');
-      data.append('patio_enclosure', scope.hasPatio ? 'true' : 'false');
 
       // Legacy fields for compatibility
       data.append('screen_type', 'window_fixed'); // Default
