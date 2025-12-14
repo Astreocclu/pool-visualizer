@@ -138,10 +138,13 @@ const ResultDetailPage = () => {
   const currentProgress = request?.progress_percentage || 0;
   const currentStatusMessage = request?.status_message || '';
 
-  // Show ProcessingScreen for pending/processing states
-  const isProcessing = isRegenerating || request.status === 'processing' || request.status === 'pending';
+  // Show ProcessingScreen for pending/processing/failed states (failed has nice error UI)
+  const showProcessingScreen = isRegenerating ||
+    request.status === 'processing' ||
+    request.status === 'pending' ||
+    (request.status === 'failed' && !resultImageUrl);
 
-  if (isProcessing) {
+  if (showProcessingScreen) {
     return (
       <ProcessingScreen
         visualizationId={id}

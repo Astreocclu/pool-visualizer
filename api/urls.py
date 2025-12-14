@@ -13,6 +13,7 @@ from .auth_views import (
 
 from .audit.views import AuditViewSet
 from .views_config import TenantConfigView
+from .views_debug import debug_errors
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
@@ -41,4 +42,7 @@ urlpatterns = [
     path('config/', TenantConfigView.as_view(), name='tenant-config'),
     path('visualization/<int:pk>/pdf/', views.VisualizationRequestViewSet.as_view({'get': 'pdf'}), name='visualization-pdf'),
     path('', include(router.urls)),
+
+    # Debug endpoints
+    path('debug/errors/', debug_errors, name='debug-errors'),
 ]

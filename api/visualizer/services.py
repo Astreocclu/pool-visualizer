@@ -72,12 +72,16 @@ class ScreenVisualizer:
 
                 elif step_type == 'insertion':
                     scope_key = step_config.get('scope_key')
-                    if scope_key and scope.get(scope_key, False):
+                    # Run if: no scope_key (always run) OR scope_key value is truthy
+                    should_run = scope_key is None or bool(scope.get(scope_key))
+                    if should_run:
                         feature_name = step_config.get('feature_name')
                         prompt = prompts.get_screen_insertion_prompt(feature_name, options)
                         current_image = self._call_gemini_edit(current_image, prompt, step_name=step_name)
                         self._save_debug_image(current_image, f"{i}_{step_name}")
                         logger.info(f"Pipeline Step: {step_name} complete.")
+                    else:
+                        logger.info(f"Pipeline Step: {step_name} skipped (scope_key '{scope_key}' not set)")
                         
                 elif step_type == 'quality_check':
                     quality_prompt = prompts.get_quality_check_prompt(scope)

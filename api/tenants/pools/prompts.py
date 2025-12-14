@@ -35,8 +35,15 @@ PRESERVE EXACTLY AS-IS:
 - Ground elevation and terrain
 - Property boundaries
 
-OUTPUT: Clean, sunny backyard image ready for pool installation.
-Maintain original resolution and perspective exactly."""
+PERSPECTIVE ADJUSTMENT:
+Always create a perspective ideal for a designer to create a 3D render of a pool.
+- Slightly elevated viewpoint (as if standing on a raised deck or second floor)
+- Angle that shows the full yard footprint clearly
+- Minimize extreme foreshortening
+- Ensure ground plane is clearly visible for pool placement
+
+OUTPUT: Clean, sunny backyard image with optimal perspective for pool visualization.
+Output at the highest resolution possible."""
 
 
 def get_pool_shell_prompt(selections: dict) -> str:
@@ -90,10 +97,11 @@ CRITICAL INTEGRATION:
 - Pool must look INSTALLED, not floating or pasted on
 - Shadows cast correctly based on sun position in image
 - Scale must be realistic relative to house and yard
-- Maintain exact perspective of original image
+- Match the perspective established in the cleaned image
 - Preserve all structures, fence, trees outside pool footprint
 
-OUTPUT: Photorealistic image showing installed pool shell."""
+OUTPUT: Photorealistic image showing installed pool shell.
+Output at the highest resolution possible."""
 
 
 def get_deck_prompt(selections: dict) -> str:
@@ -120,7 +128,7 @@ INTEGRATION:
 - Deck connects logically to any existing patio or walkways
 - Natural shadow patterns from surrounding objects on deck surface
 - Appropriate weathering (subtle, not dirty or damaged)
-- Maintain proper perspective matching the image
+- Match the perspective established in the scene
 
 PRESERVE EXACTLY:
 - The pool exactly as rendered in previous step
@@ -128,7 +136,8 @@ PRESERVE EXACTLY:
 - House, fence, and all structures
 - Original lighting and atmosphere
 
-OUTPUT: Photorealistic image with completed pool deck."""
+OUTPUT: Photorealistic image with completed pool deck.
+Output at the highest resolution possible."""
 
 
 def get_water_features_prompt(selections: dict) -> str:
@@ -169,7 +178,8 @@ PRESERVE EXACTLY:
 - Deck material and color exactly as rendered
 - All landscaping, structures, lighting
 
-OUTPUT: Photorealistic image with water features installed."""
+OUTPUT: Photorealistic image with water features installed.
+Output at the highest resolution possible."""
 
 
 def get_finishing_prompt(selections: dict) -> str:
@@ -218,7 +228,8 @@ PRESERVE EXACTLY:
 - House, fence, and all structures
 - Original lighting conditions and atmosphere
 
-OUTPUT: Photorealistic final image with all finishing touches."""
+OUTPUT: Photorealistic final image with all finishing touches.
+Output at the highest resolution possible."""
 
 
 def get_quality_check_prompt(scope: dict = None) -> str:
