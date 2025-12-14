@@ -75,8 +75,12 @@ class ScreenVisualizer:
                     # Run if: no scope_key (always run) OR scope_key value is truthy
                     should_run = scope_key is None or bool(scope.get(scope_key))
                     if should_run:
-                        feature_name = step_config.get('feature_name')
-                        prompt = prompts.get_screen_insertion_prompt(feature_name, options)
+                        # Use get_prompt which routes to the correct prompt for each step
+                        prompt = prompts.get_prompt(step_name, scope)
+                        # Some prompts return None if no features selected (e.g., water_features with empty array)
+                        if prompt is None:
+                            logger.info(f"Pipeline Step: {step_name} skipped (prompt returned None)")
+                            continue
                         current_image = self._call_gemini_edit(current_image, prompt, step_name=step_name)
                         self._save_debug_image(current_image, f"{i}_{step_name}")
                         logger.info(f"Pipeline Step: {step_name} complete.")
