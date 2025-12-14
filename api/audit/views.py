@@ -9,14 +9,14 @@ from .services import AuditService, AuditServiceError
 
 class AuditViewSet(viewsets.ViewSet):
     """
-    ViewSet for managing Security Audits.
+    ViewSet for managing Pool Site Assessments.
     """
     permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=True, methods=['post'])
     def generate(self, request, pk=None):
         """
-        Trigger generation of an audit for a specific VisualizationRequest.
+        Trigger generation of a site assessment for a specific VisualizationRequest.
         """
         # pk here is the VisualizationRequest ID
         visualization_request = get_object_or_404(VisualizationRequest, pk=pk, user=request.user)
@@ -32,7 +32,7 @@ class AuditViewSet(viewsets.ViewSet):
     @action(detail=True, methods=['get'])
     def retrieve_report(self, request, pk=None):
         """
-        Retrieve the audit report for a specific VisualizationRequest.
+        Retrieve the site assessment report for a specific VisualizationRequest.
         """
         # pk here is the VisualizationRequest ID
         visualization_request = get_object_or_404(VisualizationRequest, pk=pk, user=request.user)
@@ -42,4 +42,4 @@ class AuditViewSet(viewsets.ViewSet):
             serializer = AuditReportSerializer(audit_report)
             return Response(serializer.data)
         except AuditReport.DoesNotExist:
-            return Response({'error': 'Audit report not found for this request.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Site assessment not found for this request.'}, status=status.HTTP_404_NOT_FOUND)
