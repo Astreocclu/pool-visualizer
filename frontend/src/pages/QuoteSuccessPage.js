@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Mail, ArrowLeft, Shield, CheckCircle } from 'lucide-react';
+import { Mail, ArrowLeft, Waves, CheckCircle } from 'lucide-react';
 import './QuoteSuccessPage.css';
 
 const QuoteSuccessPage = () => {
@@ -12,7 +12,7 @@ const QuoteSuccessPage = () => {
     day: 'numeric'
   });
 
-  const quoteNumber = `BOSS-${Math.floor(1000 + Math.random() * 9000)}`;
+  const quoteNumber = `POOL-${Math.floor(1000 + Math.random() * 9000)}`;
 
   return (
     <div className="quote-page">
@@ -21,14 +21,14 @@ const QuoteSuccessPage = () => {
         {/* Document Header */}
         <header className="doc-header">
           <div className="doc-header-left">
-            <Shield className="doc-logo-icon" size={32} />
+            <Waves className="doc-logo-icon" size={32} />
             <div className="doc-brand">
-              <span className="doc-brand-name">BOSS</span>
-              <span className="doc-brand-tagline">Security Screens</span>
+              <span className="doc-brand-name">POOL</span>
+              <span className="doc-brand-tagline">Visualizer AI</span>
             </div>
           </div>
           <div className="doc-header-right">
-            <h1 className="doc-title">OFFICIAL QUOTATION</h1>
+            <h1 className="doc-title">POOL DESIGN PROPOSAL</h1>
             <p className="doc-number">#{quoteNumber}</p>
           </div>
         </header>
@@ -46,19 +46,19 @@ const QuoteSuccessPage = () => {
               </p>
             </div>
             <div className="doc-info-block">
-              <h3>Quote Information</h3>
+              <h3>Proposal Information</h3>
               <p><strong>Date:</strong> {quoteDate}</p>
               <p><strong>Valid Until:</strong> 30 Days</p>
-              <p><strong>Sales Rep:</strong> Marcus Johnson</p>
+              <p><strong>Designer:</strong> Pool Visualizer AI</p>
             </div>
           </div>
 
           {/* Visual Verification */}
           {afterImageUrl && (
             <div className="visual-verification">
-              <h3>Visual Verification</h3>
+              <h3>Design Visualization</h3>
               <div className="verification-image-wrapper">
-                <img src={afterImageUrl} alt="Security Screen Preview" />
+                <img src={afterImageUrl} alt="Pool Design Preview" />
                 <div className="verification-label">
                   <CheckCircle size={14} />
                   AI-Generated Preview
@@ -67,64 +67,69 @@ const QuoteSuccessPage = () => {
             </div>
           )}
 
-          {/* Engineering Specs */}
+          {/* Pool Specs */}
           <div className="specs-section">
-            <h3>Engineering Specifications</h3>
+            <h3>Pool Design Specifications</h3>
             <table className="specs-table">
               <tbody>
                 <tr>
-                  <td className="spec-label">Material</td>
-                  <td className="spec-value">316 Marine Grade Stainless Steel Mesh (12x12)</td>
+                  <td className="spec-label">Pool Size</td>
+                  <td className="spec-value">Classic (15' x 30')</td>
                 </tr>
                 <tr>
-                  <td className="spec-label">Impact Rating</td>
-                  <td className="spec-value">HVHZ Standards (100ft-lb)</td>
+                  <td className="spec-label">Interior Finish</td>
+                  <td className="spec-value">Pebble Blue</td>
                 </tr>
                 <tr>
-                  <td className="spec-label">Mounting</td>
-                  <td className="spec-value">Tamper-proof concealed fasteners</td>
+                  <td className="spec-label">Deck Material</td>
+                  <td className="spec-value">Travertine - Cream</td>
                 </tr>
                 <tr>
-                  <td className="spec-label">Warranty</td>
-                  <td className="spec-value">15-year comprehensive warranty</td>
+                  <td className="spec-label">Features</td>
+                  <td className="spec-value">Tanning Ledge, LED Lighting</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          {/* Itemized Costs */}
+          {/* Estimated Costs */}
           <div className="costs-section">
-            <h3>Itemized Investment</h3>
+            <h3>Estimated Investment</h3>
             <div className="cost-items">
               <div className="cost-line">
-                <span className="cost-description">1x Security Screen Door (72" x 80")</span>
+                <span className="cost-description">Pool Construction (15' x 30')</span>
                 <span className="cost-dots" />
-                <span className="cost-amount">$2,500.00</span>
+                <span className="cost-amount">$55,000.00</span>
               </div>
               <div className="cost-line">
-                <span className="cost-description">3x Security Screen Windows (36" x 48" ea.)</span>
+                <span className="cost-description">Travertine Deck (400 sq ft)</span>
                 <span className="cost-dots" />
-                <span className="cost-amount">$3,600.00</span>
+                <span className="cost-amount">$12,000.00</span>
+              </div>
+              <div className="cost-line">
+                <span className="cost-description">Tanning Ledge with Loungers</span>
+                <span className="cost-dots" />
+                <span className="cost-amount">$4,500.00</span>
               </div>
               <div className="cost-line sub-item">
-                <span className="cost-description">Professional Installation</span>
+                <span className="cost-description">LED Pool Lighting Package</span>
                 <span className="cost-dots" />
-                <span className="cost-amount included">Included</span>
+                <span className="cost-amount">$2,500.00</span>
               </div>
             </div>
 
             <div className="cost-total">
-              <span className="total-label">Total Investment</span>
-              <span className="total-amount">$6,100.00</span>
+              <span className="total-label">Estimated Total</span>
+              <span className="total-amount">$74,000.00</span>
             </div>
           </div>
 
           {/* Footer Note */}
           <div className="doc-footer-note">
             <p>
-              This quote is valid for 30 days from the date of issue. Pricing includes
-              professional measurement, fabrication, and installation by certified technicians.
-              All products carry our comprehensive warranty and meet or exceed local building codes.
+              This visualization is for planning purposes only. Final pricing will be determined
+              by your selected pool contractor after site survey. Actual costs may vary based on
+              soil conditions, access, permits, and material selections.
             </p>
           </div>
         </div>
@@ -132,8 +137,8 @@ const QuoteSuccessPage = () => {
         {/* Document Footer */}
         <footer className="doc-footer">
           <div className="footer-contact">
-            <p>Boss Security Screens | Dallas-Fort Worth</p>
-            <p>(972) 555-0123 | quotes@bosssecurityscreens.com</p>
+            <p>Pool Visualizer AI | Powered by Advanced AI</p>
+            <p>Helping you envision your perfect backyard</p>
           </div>
         </footer>
       </div>
@@ -153,7 +158,7 @@ const QuoteSuccessPage = () => {
       {/* CRM Sync Badge */}
       <div className="crm-badge">
         <span className="crm-dot" />
-        Synced to CRM
+        Design Saved
       </div>
     </div>
   );

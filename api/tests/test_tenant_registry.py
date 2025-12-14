@@ -3,95 +3,90 @@ import unittest
 from django.test import TestCase, override_settings
 
 from api.tenants import (
-    get_tenant_config, 
-    get_tenant_prompts, 
+    get_tenant_config,
+    get_tenant_prompts,
     clear_cache,
     register_tenant
 )
-from api.tenants.boss.config import BossTenantConfig
+from api.tenants.pools.config import PoolsTenantConfig
 
 
 class TenantRegistryTest(TestCase):
-    
+
     def setUp(self):
         clear_cache()
-    
-    def test_boss_tenant_registered(self):
-        """Boss tenant should be auto-registered."""
-        config = get_tenant_config('boss')
-        self.assertEqual(config.tenant_id, 'boss')
-    
-    def test_default_tenant_is_boss(self):
-        """Default active tenant should be Boss."""
+
+    def test_pools_tenant_registered(self):
+        """Pools tenant should be auto-registered."""
+        config = get_tenant_config('pools')
+        self.assertEqual(config.tenant_id, 'pools')
+
+    def test_default_tenant_is_pools(self):
+        """Default active tenant should be Pools."""
         config = get_tenant_config()
-        self.assertEqual(config.tenant_id, 'boss')
-    
-    def test_mesh_choices_not_empty(self):
-        """Mesh choices should be populated."""
+        self.assertEqual(config.tenant_id, 'pools')
+
+    def test_pool_sizes_not_empty(self):
+        """Pool sizes should be populated."""
         config = get_tenant_config()
-        choices = config.get_mesh_choices()
-        self.assertGreater(len(choices), 0)
-        self.assertIn(('12x12', '12x12 Standard'), choices)
-    
+        sizes = config.get_pool_sizes()
+        self.assertGreater(len(sizes), 0)
+        # Check that classic size exists
+        size_ids = [s['id'] for s in sizes]
+        self.assertIn('classic', size_ids)
+
     def test_prompts_module_has_required_functions(self):
         """Prompts module should have all required functions."""
         prompts = get_tenant_prompts()
         self.assertTrue(hasattr(prompts, 'get_cleanup_prompt'))
-        self.assertTrue(hasattr(prompts, 'get_screen_insertion_prompt'))
+        self.assertTrue(hasattr(prompts, 'get_pool_shell_prompt'))
+        self.assertTrue(hasattr(prompts, 'get_deck_prompt'))
         self.assertTrue(hasattr(prompts, 'get_quality_check_prompt'))
-    
+
     def test_unknown_tenant_raises_error(self):
         """Unknown tenant ID should raise ValueError."""
         with self.assertRaises(ValueError):
             get_tenant_config('nonexistent')
 
 
-class PromptParityTest(TestCase):
-    """Verify tenant prompts match original prompts exactly."""
-    
-    def test_cleanup_prompt_parity(self):
-        """Cleanup prompt should match original."""
-        from api.visualizer import prompts as original
-        from api.tenants.boss import prompts as tenant
-        
-        self.assertEqual(
-            original.get_cleanup_prompt(),
-            tenant.get_cleanup_prompt()
-        )
-    
-    def test_screen_insertion_prompt_parity(self):
-        """Screen insertion prompt should match original."""
-        from api.visualizer import prompts as original
-        from api.tenants.boss import prompts as tenant
-        
-        test_cases = [
-            ('windows', {'color': 'Black', 'mesh_type': 'Standard'}),
-            ('patio enclosure', {'color': 'Dark Bronze', 'mesh_type': 'privacy'}),
-            ('entry doors', {'color': 'Stucco', 'mesh_type': 'solar'}),
-        ]
-        
-        for feature_type, options in test_cases:
-            with self.subTest(feature_type=feature_type):
-                self.assertEqual(
-                    original.get_screen_insertion_prompt(feature_type, options),
-                    tenant.get_screen_insertion_prompt(feature_type, options)
-                )
-    
-    def test_quality_check_prompt_parity(self):
-        """Quality check prompt should match original."""
-        from api.visualizer import prompts as original
-        from api.tenants.boss import prompts as tenant
-        
-        test_scopes = [
-            None,
-            {'patio': True},
-            {'windows': False},
-            {'patio': True, 'windows': False, 'doors': True},
-        ]
-        
-        for scope in test_scopes:
-            with self.subTest(scope=scope):
-                self.assertEqual(
-                    original.get_quality_check_prompt(scope),
-                    tenant.get_quality_check_prompt(scope)
-                )
+class PoolsPromptTest(TestCase):
+    """Test pools tenant prompts generate valid content."""
+
+    def test_cleanup_prompt_exists(self):
+        """Cleanup prompt should be non-empty."""
+        prompts = get_tenant_prompts()
+        prompt = prompts.get_cleanup_prompt()
+        self.assertIsNotNone(prompt)
+        self.assertGreater(len(prompt), 100)
+        self.assertIn('backyard', prompt.lower())
+
+    def test_pool_shell_prompt_uses_selections(self):
+        """Pool shell prompt should incorporate selections."""
+        prompts = get_tenant_prompts()
+        selections = {
+            'size': 'classic',
+            'shape': 'rectangle',
+            'finish': 'pebble_blue'
+        }
+        prompt = prompts.get_pool_shell_prompt(selections)
+        self.assertIsNotNone(prompt)
+        self.assertIn('pool', prompt.lower())
+
+    def test_deck_prompt_uses_material(self):
+        """Deck prompt should incorporate material selection."""
+        prompts = get_tenant_prompts()
+        selections = {
+            'deck_material': 'travertine',
+            'deck_color': 'cream'
+        }
+        prompt = prompts.get_deck_prompt(selections)
+        self.assertIsNotNone(prompt)
+        self.assertIn('deck', prompt.lower())
+
+    def test_quality_check_prompt_has_scoring(self):
+        """Quality check prompt should include scoring criteria."""
+        prompts = get_tenant_prompts()
+        prompt = prompts.get_quality_check_prompt()
+        self.assertIsNotNone(prompt)
+        self.assertIn('score', prompt.lower())
+        self.assertIn('json', prompt.lower())

@@ -1,9 +1,86 @@
 # Session Notes
 
-## Latest Session
-**Date:** 2025-12-01
-**Branch:** fix/scope-mismatch-20251201-0956 (created from feature/ui-testing)
-**Duration:** Ongoing
+---
+
+## Session: 2025-12-13 - Pools Visualizer Full Implementation
+
+### Context
+- User wanted to create a standalone pools visualizer forked from the boss-security-visualizer
+- Previous session had forked the repo to `/home/reid/testhome/pools-visualizer/`
+- This session implemented the full 5-screen wizard and 6-step AI pipeline
+
+### Work Completed
+- **Backend - Pools Tenant (Tasks 1-4)**
+  - Created `api/tenants/pools/__init__.py`
+  - Created `api/tenants/pools/config.py` - comprehensive config with pricing-ready data model (prices hidden from API)
+  - Created `api/tenants/pools/prompts.py` - 6-step AI pipeline prompts
+  - Registered PoolsTenantConfig in `api/tenants/__init__.py`
+  - Added missing abstract methods (`get_mesh_color_choices`, `get_opacity_choices`)
+
+- **Frontend - 5-Screen Wizard (Tasks 5-14)**
+  - Updated Zustand store with pool selections in `frontend/src/store/visualizationStore.js`
+  - Created config API endpoint in `api/views_config.py`
+  - Created 5 new wizard screens:
+    - `PoolSizeShapeStep.js` - Size (Starter/Classic/Family/Resort/Custom) + Shape (7 options)
+    - `FinishBuiltInsStep.js` - Interior finish, tanning ledge, loungers, spa
+    - `DeckStep.js` - Deck material + color with navigation buttons
+    - `WaterFeaturesStep.js` - Multi-select water features (max 2)
+    - `FinishingStep.js` - Lighting, landscaping, furniture radio groups
+  - Updated `Step5Review.js` with pool-specific review display
+  - Integrated wizard in `frontend/src/pages/UploadPage.js`
+  - Added comprehensive CSS for all wizard components in `UploadPage.css`
+
+- **Cleanup & Fixes (Tasks 15-18)**
+  - Updated `Navigation.js` - Changed title from "Homescreen Visualizer" to "Pool Visualizer"
+  - Updated `ProcessingScreen.jsx` - Pool-relevant messages and "Pool Visualizer AI" branding
+  - Fixed DeckStep missing navigation buttons
+  - Fixed API port from 8000 to 8006 in `frontend/src/services/api.js`
+
+### Current State
+- **Backend:** Running on port 8006 with `ACTIVE_TENANT=pools`
+- **Frontend:** Running on port 3006
+- **Config API:** Working at `http://localhost:8006/api/config/` - returns pools config with no pricing data
+- **Wizard:** All 5 screens functional with navigation
+- **Issue:** User reported "Network Error" on submit - fixed API port, needs verification
+
+### Next Steps
+1. **Verify submit works** - User needs to refresh and test the full wizard flow
+2. **Test AI pipeline** - Submit an image and verify the 6-step pipeline runs correctly
+3. **Prompts refinement** - The prompts.py has the full pipeline but may need tuning after testing
+4. **Style polish** - Some wizard screens may need visual tweaks for uniformity
+
+### Notes
+- **Port Configuration:** Backend runs on 8006, frontend on 3006. API port was hardcoded to 8000 - fixed to 8006.
+- **Pricing Hidden:** Config API excludes all pricing data (base_price, price_multiplier, price_add, price_per_sqft)
+- **Pipeline Steps:** cleanup → pool_shell → deck → water_features → finishing → quality_check
+- **State Management:** Components use Zustand store directly, UploadPage passes props but they're not always used
+- **User Instruction:** "NEVER TOUCH PROMPTS UNLESS THE USER SPECIFICALLY SAYS ITS OK" - prompts should not be modified without explicit approval
+
+### Key Files
+- `api/tenants/pools/config.py` - All pool configuration options
+- `api/tenants/pools/prompts.py` - 6-step AI pipeline prompts (DO NOT MODIFY without approval)
+- `frontend/src/pages/UploadPage.js` - Main wizard container
+- `frontend/src/pages/UploadPage.css` - All wizard styling
+- `frontend/src/components/UploadWizard/*.js` - Individual wizard step components
+- `frontend/src/services/api.js` - API configuration (port 8006)
+
+### Git Commits This Session
+```
+109b8a2 fix(api): change default API port to 8006
+4d3f280 fix(wizard): add navigation buttons to DeckStep and unify CSS across all wizard steps
+3ce4469 feat: pools visualizer complete
+4b99d3e chore: remove remaining security screen references
+96b06f4 fix(wizard): correct store import and remove missing CSS import in DeckStep
+aa92d76 fix(pools): add missing abstract methods to PoolsTenantConfig
+9decff9 style(wizard): add CSS for pool wizard components
+6c08770 feat(wizard): update review step for pool selections
+0d4ce85 feat(wizard): integrate new 5-screen pool wizard
+... (and earlier tasks)
+```
+
+---
+
+## Session: 2025-12-01 - Boss Visualizer Diagnostics
 
 ### What We Did
 - Created comprehensive TENANT-ARCHITECTURE.md documentation (~700 lines)

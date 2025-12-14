@@ -58,14 +58,6 @@ POOL_SIZES = [
         'prompt_hint': 'large resort-style pool approximately 18 by 40 feet',
         'description': 'Best for: Large properties, serious swimmers',
     },
-    {
-        'id': 'custom',
-        'name': 'Custom',
-        'dimensions': None,
-        'base_price': None,
-        'prompt_hint': 'pool sized appropriately for the available yard space',
-        'description': 'I need something specific',
-    },
 ]
 
 POOL_SHAPES = [

@@ -1,8 +1,8 @@
 # File: api/visualizer/prompts.py
 
 """
-Boss Security Visualizer - Prompts
-----------------------------------
+Pool Visualizer - Prompts
+-------------------------
 Simplified, atomic prompts for the Nano Banana Pro pipeline.
 Focused on visual descriptions, not physical attributes.
 """

@@ -51,34 +51,34 @@ export function useTenantConfig() {
 
 /**
  * Fallback configuration if API fails.
- * Matches current hardcoded values for backward compatibility.
+ * Defaults to pools tenant configuration.
  */
 function getDefaultConfig() {
     return {
-        tenant_id: 'boss',
-        display_name: 'Boss Security Screens',
+        tenant_id: 'pools',
+        display_name: 'Pool Visualizer AI',
         choices: {
-            mesh: [
-                ['10x10', '10x10 Standard'],
-                ['12x12', '12x12 Standard'],
-                ['12x12_american', '12x12 American'],
+            size: [
+                ['starter', 'Starter (12x24)'],
+                ['classic', 'Classic (15x30)'],
+                ['family', 'Family (16x36)'],
+                ['resort', 'Resort (18x40)'],
             ],
-            frame_color: [
-                ['Black', 'Black'],
-                ['Dark Bronze', 'Dark Bronze'],
-                ['Stucco', 'Stucco'],
-                ['White', 'White'],
-                ['Almond', 'Almond'],
+            shape: [
+                ['rectangle', 'Rectangle'],
+                ['roman', 'Roman'],
+                ['kidney', 'Kidney'],
+                ['freeform', 'Freeform'],
             ],
-            mesh_color: [
-                ['Black', 'Black (Recommended)'],
-                ['Stucco', 'Stucco'],
-                ['Bronze', 'Bronze'],
+            finish: [
+                ['white_plaster', 'White Plaster'],
+                ['pebble_blue', 'Pebble Tec - Blue'],
+                ['quartz_blue', 'Quartz - Ocean Blue'],
             ],
-            opacity: [
-                ['80', '80%'],
-                ['95', '95%'],
-                ['99', '99%'],
+            deck_material: [
+                ['travertine', 'Travertine'],
+                ['pavers', 'Pavers'],
+                ['stamped_concrete', 'Stamped Concrete'],
             ],
         },
     };

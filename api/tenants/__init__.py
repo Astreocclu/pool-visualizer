@@ -12,7 +12,6 @@ from typing import Optional, Dict
 from django.conf import settings
 
 from .base import BaseTenantConfig
-from .boss.config import BossTenantConfig
 from .pools.config import PoolsTenantConfig
 
 logger = logging.getLogger(__name__)
@@ -55,11 +54,11 @@ def get_tenant_config(tenant_id: Optional[str] = None) -> BaseTenantConfig:
         return _active_tenant
     
     # Determine active tenant from settings
-    active_id = getattr(settings, 'ACTIVE_TENANT', 'boss')
-    
+    active_id = getattr(settings, 'ACTIVE_TENANT', 'pools')
+
     if active_id not in _TENANT_REGISTRY:
-        logger.warning(f"Configured tenant '{active_id}' not found, falling back to 'boss'")
-        active_id = 'boss'
+        logger.warning(f"Configured tenant '{active_id}' not found, falling back to 'pools'")
+        active_id = 'pools'
     
     _active_tenant = _TENANT_REGISTRY[active_id]
     return _active_tenant
@@ -82,6 +81,5 @@ def clear_cache() -> None:
     _active_tenant = None
 
 
-# Auto-register Boss tenant on module load
-register_tenant(BossTenantConfig())
+# Auto-register Pools tenant on module load
 register_tenant(PoolsTenantConfig())

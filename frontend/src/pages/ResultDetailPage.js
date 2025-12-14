@@ -181,11 +181,11 @@ const ResultDetailPage = () => {
           </div>
           <div className={`image-layer ${!showOriginal ? 'visible' : 'hidden'}`}>
             {resultImageUrl ? (
-              <img src={resultImageUrl} alt="With Screens" />
+              <img src={resultImageUrl} alt="With Pool" />
             ) : (
               <div className="placeholder-image">Processing...</div>
             )}
-            <span className="label after-label">Boss Security Screen</span>
+            <span className="label after-label">With Pool</span>
           </div>
 
           <div className="toggle-button-container">
@@ -193,7 +193,7 @@ const ResultDetailPage = () => {
               className={`btn-toggle-view ${!showOriginal ? 'active' : ''}`}
               onClick={() => setShowOriginal(!showOriginal)}
             >
-              {showOriginal ? 'Show Security Screens' : 'Show Original'}
+              {showOriginal ? 'Show Pool' : 'Show Original'}
             </button>
           </div>
         </div>

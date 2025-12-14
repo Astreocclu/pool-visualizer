@@ -206,7 +206,7 @@ const ProcessingScreen = ({
 
         {/* Branding */}
         <div className="branding">
-          Powered by <span className="brand-name">Boss Security Screens</span>
+          Powered by <span className="brand-name">Pool Visualizer AI</span>
         </div>
       </div>
     </div>
