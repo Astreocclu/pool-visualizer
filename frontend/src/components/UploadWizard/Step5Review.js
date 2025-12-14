@@ -7,7 +7,6 @@ const POOL_SIZES = {
     classic: { name: 'Classic', dimensions: '15x30' },
     family: { name: 'Family', dimensions: '16x36' },
     resort: { name: 'Resort', dimensions: '18x40' },
-    custom: { name: 'Custom', dimensions: 'Custom' },
 };
 
 const POOL_SHAPES = {

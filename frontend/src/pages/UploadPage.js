@@ -14,27 +14,14 @@ import './UploadPage.css';
 
 const UploadPage = () => {
   const [step, setStep] = useState(1);
-  const [selections, setSelections] = useState({
-    size: '',
-    shape: '',
-    finish: '',
-    tanning_ledge: false,
-    lounger_count: 0,
-    attached_spa: false,
-    deck_material: '',
-    deck_color: '',
-    water_features: [],
-    lighting: [],
-    landscaping: [],
-    furniture: [],
-  });
   const [formData, setFormData] = useState({
     image: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { scope } = useVisualizationStore();
+  // Use store selections - all step components write to this
+  const { selections } = useVisualizationStore();
 
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => prev - 1);
@@ -95,40 +82,30 @@ const UploadPage = () => {
 
       {step === 1 && (
         <PoolSizeShapeStep
-          selections={selections}
-          setSelections={setSelections}
           nextStep={nextStep}
           prevStep={prevStep}
         />
       )}
       {step === 2 && (
         <FinishBuiltInsStep
-          selections={selections}
-          setSelections={setSelections}
           nextStep={nextStep}
           prevStep={prevStep}
         />
       )}
       {step === 3 && (
         <DeckStep
-          selections={selections}
-          setSelections={setSelections}
           nextStep={nextStep}
           prevStep={prevStep}
         />
       )}
       {step === 4 && (
         <WaterFeaturesStep
-          selections={selections}
-          setSelections={setSelections}
           nextStep={nextStep}
           prevStep={prevStep}
         />
       )}
       {step === 5 && (
         <FinishingStep
-          selections={selections}
-          setSelections={setSelections}
           nextStep={nextStep}
           prevStep={prevStep}
         />

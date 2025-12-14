@@ -6,7 +6,6 @@ const POOL_SIZES = [
     { id: 'classic', name: 'Classic', dimensions: '15x30', description: 'Best for: Average yards, families', popular: true },
     { id: 'family', name: 'Family', dimensions: '16x36', description: 'Best for: Larger yards, kids, entertaining' },
     { id: 'resort', name: 'Resort', dimensions: '18x40', description: 'Best for: Large properties, serious swimmers' },
-    { id: 'custom', name: 'Custom', dimensions: 'Custom', description: 'I need something specific' },
 ];
 
 const POOL_SHAPES = [
