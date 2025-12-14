@@ -18,18 +18,21 @@ class AuditServiceError(Exception):
     pass
 
 class AuditService:
+    """
+    Service for performing pool site assessments using AI.
+    """
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.environ.get("GOOGLE_API_KEY")
         if not self.api_key:
             logger.error("GOOGLE_API_KEY not found. AuditService cannot function.")
             raise AuditServiceError("API Key missing. Please set GOOGLE_API_KEY.")
-            
+
         self.client = genai.Client(api_key=self.api_key)
-        self.model_name = "gemini-2.0-flash"  # Fast vision model for security analysis
+        self.model_name = "gemini-2.0-flash"  # Fast vision model for site assessment
 
     def perform_audit(self, visualization_request) -> AuditReport:
         """
-        Performs a security audit on the original image of the request.
+        Performs a site assessment on the backyard image.
         """
         try:
             # Check if audit already exists
@@ -46,16 +49,24 @@ class AuditService:
                 
                 prompt = get_audit_prompt()
                 result_json = self._call_gemini_json(img, prompt)
-                
-                # Create AuditReport
+
+                # Create AuditReport with new pool site assessment fields
                 audit_report = AuditReport.objects.create(
                     request=visualization_request,
-                    has_ground_level_access=result_json.get('has_ground_level_access', False),
-                    has_concealment=result_json.get('has_concealment', False),
-                    has_glass_proximity=result_json.get('has_glass_proximity', False),
-                    has_hardware_weakness=result_json.get('has_hardware_weakness', False),
-                    vulnerabilities=result_json.get('vulnerabilities', []),
-                    analysis_summary=result_json.get('analysis_summary', "Analysis completed.")
+                    # New pool site assessment fields
+                    has_tree_clearance_needed=result_json.get('has_tree_clearance_needed', False),
+                    has_structure_relocation_needed=result_json.get('has_structure_relocation_needed', False),
+                    has_grading_needed=result_json.get('has_grading_needed', False),
+                    has_access_considerations=result_json.get('has_access_considerations', False),
+                    site_items=result_json.get('site_items', []),
+                    assessment_summary=result_json.get('assessment_summary', "Site assessment completed."),
+                    # Legacy field mappings for backwards compatibility
+                    has_ground_level_access=result_json.get('has_tree_clearance_needed', False),
+                    has_concealment=result_json.get('has_structure_relocation_needed', False),
+                    has_glass_proximity=result_json.get('has_grading_needed', False),
+                    has_hardware_weakness=result_json.get('has_access_considerations', False),
+                    vulnerabilities=result_json.get('site_items', []),
+                    analysis_summary=result_json.get('assessment_summary', "Site assessment completed."),
                 )
                 
                 return audit_report
@@ -113,8 +124,12 @@ class AuditService:
                 logger.warning(f"Failed to parse JSON from AI response: {text_response}")
                 # Fallback structure
                 return {
-                    'has_ground_level_access': False,
-                    'analysis_summary': f"Could not parse AI response. Raw: {text_response[:100]}..."
+                    'has_tree_clearance_needed': False,
+                    'has_structure_relocation_needed': False,
+                    'has_grading_needed': False,
+                    'has_access_considerations': False,
+                    'site_items': [],
+                    'assessment_summary': f"Could not parse AI response. Raw: {text_response[:100]}..."
                 }
 
         except Exception as e:
