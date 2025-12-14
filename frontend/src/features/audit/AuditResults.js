@@ -1,78 +1,90 @@
 import React from 'react';
-import { AlertTriangle, ShieldAlert, Lock, EyeOff } from 'lucide-react';
+import { TreePine, Home, Mountain, Truck, CheckCircle } from 'lucide-react';
 
 const AuditResults = ({ auditReport }) => {
     if (!auditReport) return null;
 
-    const risks = [];
-    if (auditReport.has_ground_level_access) {
-        risks.push({
-            icon: <AlertTriangle className="w-6 h-6 text-red-500" />,
-            title: "Ground Level Access",
-            desc: "Windows within 6ft of ground are primary entry points."
+    const siteItems = [];
+
+    // Check new field names first, fall back to legacy field names
+    const hasTreeClearance = auditReport.has_tree_clearance_needed ?? auditReport.has_ground_level_access;
+    const hasStructureRelocation = auditReport.has_structure_relocation_needed ?? auditReport.has_concealment;
+    const hasGrading = auditReport.has_grading_needed ?? auditReport.has_glass_proximity;
+    const hasAccessConsiderations = auditReport.has_access_considerations ?? auditReport.has_hardware_weakness;
+
+    if (hasTreeClearance) {
+        siteItems.push({
+            icon: <TreePine className="w-6 h-6 text-amber-500" />,
+            title: "Tree Clearance",
+            desc: "Large trees in the pool zone may need removal."
         });
     }
-    if (auditReport.has_concealment) {
-        risks.push({
-            icon: <EyeOff className="w-6 h-6 text-red-500" />,
-            title: "Concealed Entry",
-            desc: "Landscaping hides potential intruders from view."
+    if (hasStructureRelocation) {
+        siteItems.push({
+            icon: <Home className="w-6 h-6 text-amber-500" />,
+            title: "Structure Relocation",
+            desc: "Existing structures may need to be moved or removed."
         });
     }
-    if (auditReport.has_glass_proximity) {
-        risks.push({
-            icon: <Lock className="w-6 h-6 text-orange-500" />,
-            title: "Glass Proximity",
-            desc: "Glass near locks allows for 'break and reach' entry."
+    if (hasGrading) {
+        siteItems.push({
+            icon: <Mountain className="w-6 h-6 text-amber-500" />,
+            title: "Grading Work",
+            desc: "Terrain may require leveling or grading."
         });
     }
-    if (auditReport.has_hardware_weakness) {
-        risks.push({
-            icon: <ShieldAlert className="w-6 h-6 text-red-500" />,
-            title: "Hardware Weakness",
-            desc: "Standard fly screens offer zero security protection."
+    if (hasAccessConsiderations) {
+        siteItems.push({
+            icon: <Truck className="w-6 h-6 text-amber-500" />,
+            title: "Access Considerations",
+            desc: "Discuss equipment access with your contractor."
         });
     }
+
+    // Use new field names, fall back to legacy
+    const summary = auditReport.assessment_summary || auditReport.analysis_summary;
 
     return (
         <div className="audit-results-container" style={{ marginTop: '2rem' }}>
-            <h3 style={{ color: 'var(--brand-red)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <ShieldAlert /> Security Vulnerability Assessment
+            <h3 style={{ color: '#0077b6', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <CheckCircle /> Site Assessment
             </h3>
 
             <div className="audit-summary" style={{
-                background: 'rgba(211, 47, 47, 0.1)',
+                background: 'rgba(0, 119, 182, 0.1)',
                 padding: '1rem',
                 borderRadius: 'var(--radius-md)',
-                borderLeft: '4px solid var(--brand-red)',
+                borderLeft: '4px solid #0077b6',
                 marginBottom: '1.5rem'
             }}>
-                <p style={{ margin: 0, fontStyle: 'italic' }}>"{auditReport.analysis_summary}"</p>
+                <p style={{ margin: 0, fontStyle: 'italic' }}>"{summary}"</p>
             </div>
 
-            <div className="risks-grid" style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
-                {risks.map((risk, index) => (
-                    <div key={index} className="risk-card" style={{
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        padding: '1rem',
-                        borderRadius: 'var(--radius-md)',
-                        display: 'flex',
-                        alignItems: 'start',
-                        gap: '1rem'
-                    }}>
-                        {risk.icon}
-                        <div>
-                            <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--white)' }}>{risk.title}</h4>
-                            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--slate)' }}>{risk.desc}</p>
+            {siteItems.length > 0 && (
+                <div className="site-items-grid" style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
+                    {siteItems.map((item, index) => (
+                        <div key={index} className="site-item-card" style={{
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            padding: '1rem',
+                            borderRadius: 'var(--radius-md)',
+                            display: 'flex',
+                            alignItems: 'start',
+                            gap: '1rem'
+                        }}>
+                            {item.icon}
+                            <div>
+                                <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--white)' }}>{item.title}</h4>
+                                <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--slate)' }}>{item.desc}</p>
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            )}
 
-            {risks.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--gold-primary)' }}>
-                    <ShieldAlert className="w-12 h-12 mx-auto mb-2" />
-                    <p>No high-risk vulnerabilities detected by AI.</p>
+            {siteItems.length === 0 && (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#00b4d8' }}>
+                    <CheckCircle className="w-12 h-12 mx-auto mb-2" />
+                    <p>Your backyard looks ready for pool installation!</p>
                 </div>
             )}
         </div>
