@@ -6,6 +6,7 @@ import ResultDetailPage from './pages/ResultDetailPage';
 import QuoteSuccessPage from './pages/QuoteSuccessPage';
 import UploadPage from './pages/UploadPage';
 import WindowsUploadPage from './pages/WindowsUploadPage';
+import RoofsUploadPage from './pages/RoofsUploadPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ScreenTypesPage from './pages/ScreenTypesPage';
@@ -123,6 +124,12 @@ function App() {
           <Route path="/upload/windows" element={
             <ProtectedRoute>
               <WindowsUploadPage />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/upload/roofs" element={
+            <ProtectedRoute>
+              <RoofsUploadPage />
             </ProtectedRoute>
           } />
 
