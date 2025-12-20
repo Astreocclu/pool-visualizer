@@ -20,6 +20,23 @@ PRICING = {
     'led_lighting': 2500,
 }
 
+# Window pricing estimates
+WINDOW_PRICING = {
+    'single_hung': 350,
+    'double_hung': 450,
+    'casement': 500,
+    'slider': 400,
+    'picture': 300,
+    'vinyl_multiplier': 1.0,
+    'wood_multiplier': 1.5,
+    'fiberglass_multiplier': 1.3,
+    'aluminum_multiplier': 1.2,
+    'grille_add': 150,
+    'decorative_glass_add': 100,
+    'trim_upgrade': 75,
+    'installation_per_window': 150,
+}
+
 def calculate_quote(visualization_request):
     """
     Calculate quote based on pool selections.
@@ -78,6 +95,79 @@ def calculate_quote(visualization_request):
             'subtotal': PRICING['led_lighting']
         })
         total += PRICING['led_lighting']
+
+    return {'items': items, 'total': total}
+
+def calculate_windows_quote(visualization_request, window_count=5):
+    """Calculate quote based on window selections. Assumes 5 windows unless specified."""
+    options = visualization_request.options or {}
+    items = []
+    total = 0
+
+    # Window base price
+    window_type = options.get('window_type', 'double_hung')
+    base_price = WINDOW_PRICING.get(window_type, WINDOW_PRICING['double_hung'])
+
+    # Material multiplier
+    material = options.get('frame_material', 'vinyl')
+    multiplier = WINDOW_PRICING.get(f'{material}_multiplier', 1.0)
+
+    window_unit_price = int(base_price * multiplier)
+    window_total = window_unit_price * window_count
+
+    items.append({
+        'name': f'{window_type.replace("_", " ").title()} Windows ({material.title()})',
+        'qty': window_count,
+        'unit_price': window_unit_price,
+        'subtotal': window_total
+    })
+    total += window_total
+
+    # Grille pattern
+    grille = options.get('grille_pattern', 'none')
+    if grille != 'none':
+        grille_total = WINDOW_PRICING['grille_add'] * window_count
+        items.append({
+            'name': f'{grille.title()} Grille Pattern',
+            'qty': window_count,
+            'unit_price': WINDOW_PRICING['grille_add'],
+            'subtotal': grille_total
+        })
+        total += grille_total
+
+    # Decorative glass
+    glass = options.get('glass_option', 'clear')
+    if glass not in ['clear', 'low_e']:
+        glass_total = WINDOW_PRICING['decorative_glass_add'] * window_count
+        items.append({
+            'name': f'{glass.title()} Glass',
+            'qty': window_count,
+            'unit_price': WINDOW_PRICING['decorative_glass_add'],
+            'subtotal': glass_total
+        })
+        total += glass_total
+
+    # Trim upgrade
+    trim = options.get('trim_style', 'standard')
+    if trim != 'standard':
+        trim_total = WINDOW_PRICING['trim_upgrade'] * window_count
+        items.append({
+            'name': f'{trim.title()} Trim Upgrade',
+            'qty': window_count,
+            'unit_price': WINDOW_PRICING['trim_upgrade'],
+            'subtotal': trim_total
+        })
+        total += trim_total
+
+    # Installation
+    install_total = WINDOW_PRICING['installation_per_window'] * window_count
+    items.append({
+        'name': 'Professional Installation',
+        'qty': window_count,
+        'unit_price': WINDOW_PRICING['installation_per_window'],
+        'subtotal': install_total
+    })
+    total += install_total
 
     return {'items': items, 'total': total}
 
