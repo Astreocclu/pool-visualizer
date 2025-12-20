@@ -6,7 +6,64 @@ Pipeline: cleanup → window_frame → grilles_glass → trim → quality_check
 from api.tenants.base import BaseTenantConfig
 
 VERTICAL_NAME = "windows"
-VERTICAL_DISPLAY_NAME = "Window Replacement"
+VERTICAL_DISPLAY_NAME = "Glass Doors & Windows"
+
+PROJECT_TYPES = [
+    {
+        'id': 'replace_existing',
+        'name': 'Replace Existing',
+        'prompt_hint': 'replacing existing windows and doors',
+        'description': 'Replace current windows and/or doors with new ones',
+    },
+    {
+        'id': 'new_opening',
+        'name': 'Create New Opening',
+        'prompt_hint': 'creating new window or door openings in walls',
+        'description': 'Add new windows or doors where none exist',
+    },
+    {
+        'id': 'enclose_patio',
+        'name': 'Enclose Patio',
+        'prompt_hint': 'enclosing patio or porch with glass doors and windows',
+        'description': 'Convert open patio/porch to enclosed sunroom',
+        'popular': True,
+    },
+]
+
+DOOR_TYPES = [
+    {
+        'id': 'none',
+        'name': 'Windows Only',
+        'prompt_hint': '',
+        'description': 'No doors, windows only',
+    },
+    {
+        'id': 'sliding_glass',
+        'name': 'Sliding Glass Door',
+        'prompt_hint': 'sliding glass patio door with large glass panels',
+        'description': 'Standard sliding glass door for patio access',
+        'popular': True,
+    },
+    {
+        'id': 'accordion',
+        'name': 'Accordion Door',
+        'prompt_hint': 'accordion folding glass door system with multiple panels',
+        'description': 'Multi-panel folding door that opens completely',
+        'popular': True,
+    },
+    {
+        'id': 'bi_fold',
+        'name': 'Bi-Fold Door',
+        'prompt_hint': 'bi-fold glass door with panels that fold in pairs',
+        'description': 'Panels fold in pairs for wide opening',
+    },
+    {
+        'id': 'french',
+        'name': 'French Door',
+        'prompt_hint': 'french doors with glass panels and traditional styling',
+        'description': 'Classic hinged double doors with glass',
+    },
+]
 
 WINDOW_TYPES = [
     {
@@ -227,6 +284,8 @@ def get_config():
     return {
         'name': VERTICAL_NAME,
         'display_name': VERTICAL_DISPLAY_NAME,
+        'project_types': PROJECT_TYPES,
+        'door_types': DOOR_TYPES,
         'window_types': WINDOW_TYPES,
         'window_styles': WINDOW_STYLES,
         'frame_materials': [
