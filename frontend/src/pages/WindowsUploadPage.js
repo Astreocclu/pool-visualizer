@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import { createVisualizationRequest } from '../services/api';
 import useVisualizationStore from '../store/visualizationStore';
+import ProjectTypeStep from '../components/UploadWizard/ProjectTypeStep';
+import DoorTypeStep from '../components/UploadWizard/DoorTypeStep';
 import WindowTypeStep from '../components/UploadWizard/WindowTypeStep';
 import FrameMaterialStep from '../components/UploadWizard/FrameMaterialStep';
 import GrillePatternStep from '../components/UploadWizard/GrillePatternStep';
@@ -31,6 +33,8 @@ const WindowsUploadPage = () => {
       const data = new FormData();
       // Include window selections data
       const selectionsPayload = {
+        project_type: selections.project_type,
+        door_type: selections.door_type,
         window_type: selections.window_type,
         window_style: selections.window_style,
         frame_material: selections.frame_material,
@@ -59,11 +63,11 @@ const WindowsUploadPage = () => {
         <div className="progress-track">
           <div
             className="progress-fill"
-            style={{ width: `${((step - 1) / 5) * 100}%` }}
+            style={{ width: `${((step - 1) / 7) * 100}%` }}
           />
         </div>
         <div className="steps-indicator">
-          {[1, 2, 3, 4, 5, 6].map(s => (
+          {[1, 2, 3, 4, 5, 6, 7, 8].map(s => (
             <div
               key={s}
               className={`step-dot ${s <= step ? 'active' : ''} ${s === step ? 'current' : ''}`}
@@ -75,30 +79,42 @@ const WindowsUploadPage = () => {
       </div>
 
       {step === 1 && (
-        <WindowTypeStep
+        <ProjectTypeStep
           nextStep={nextStep}
           prevStep={prevStep}
         />
       )}
       {step === 2 && (
-        <FrameMaterialStep
+        <DoorTypeStep
           nextStep={nextStep}
           prevStep={prevStep}
         />
       )}
       {step === 3 && (
-        <GrillePatternStep
+        <WindowTypeStep
           nextStep={nextStep}
           prevStep={prevStep}
         />
       )}
       {step === 4 && (
-        <HardwareTrimStep
+        <FrameMaterialStep
           nextStep={nextStep}
           prevStep={prevStep}
         />
       )}
       {step === 5 && (
+        <GrillePatternStep
+          nextStep={nextStep}
+          prevStep={prevStep}
+        />
+      )}
+      {step === 6 && (
+        <HardwareTrimStep
+          nextStep={nextStep}
+          prevStep={prevStep}
+        />
+      )}
+      {step === 7 && (
         <Step4Upload
           formData={formData}
           setFormData={setFormData}
@@ -106,7 +122,7 @@ const WindowsUploadPage = () => {
           prevStep={prevStep}
         />
       )}
-      {step === 6 && (
+      {step === 8 && (
         <Step5Review
           formData={formData}
           selections={selections}
