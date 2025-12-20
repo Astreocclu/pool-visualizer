@@ -13,6 +13,7 @@ from django.conf import settings
 
 from .base import BaseTenantConfig
 from .pools.config import PoolsTenantConfig
+from .windows.config import WindowsTenantConfig
 
 logger = logging.getLogger(__name__)
 
@@ -81,5 +82,6 @@ def clear_cache() -> None:
     _active_tenant = None
 
 
-# Auto-register Pools tenant on module load
+# Auto-register tenants on module load
 register_tenant(PoolsTenantConfig())
+register_tenant(WindowsTenantConfig())
