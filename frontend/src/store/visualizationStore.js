@@ -87,6 +87,12 @@ const initialState = {
     trim_style: 'standard',
     project_type: null,
     door_type: null,
+
+    // === ROOFS SELECTIONS ===
+    roof_material: null,
+    roof_color: null,
+    solar_option: null,
+    gutter_option: null,
   }
 };
 
@@ -267,6 +273,11 @@ const useVisualizationStore = create(
 
       setProjectType: (project_type) => set({ selections: { ...get().selections, project_type } }),
       setDoorType: (door_type) => set({ selections: { ...get().selections, door_type } }),
+
+      setRoofMaterial: (roof_material) => set({ selections: { ...get().selections, roof_material } }),
+      setRoofColor: (roof_color) => set({ selections: { ...get().selections, roof_color } }),
+      setSolarOption: (solar_option) => set({ selections: { ...get().selections, solar_option } }),
+      setGutterOption: (gutter_option) => set({ selections: { ...get().selections, gutter_option } }),
 
       resetSelections: () => {
         set({ selections: initialState.selections });
