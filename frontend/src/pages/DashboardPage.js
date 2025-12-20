@@ -67,13 +67,25 @@ const DashboardPage = ({ user, onLogout }) => {
                                 display: 'block'
                             }}
                         >
-                            📤 Upload Image
+                            📤 Upload Image (Pools)
+                        </Link>
+                        <Link
+                            to="/upload/windows"
+                            className="btn"
+                            style={{
+                                backgroundColor: '#28a745',
+                                textAlign: 'center',
+                                textDecoration: 'none',
+                                display: 'block'
+                            }}
+                        >
+                            🪟 Upload Image (Windows)
                         </Link>
                         <Link
                             to="/results"
                             className="btn"
                             style={{
-                                backgroundColor: '#17a2b8', // Override for different color if needed, or use class
+                                backgroundColor: '#17a2b8',
                                 textAlign: 'center',
                                 textDecoration: 'none',
                                 display: 'block'
