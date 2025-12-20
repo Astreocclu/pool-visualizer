@@ -85,6 +85,8 @@ const initialState = {
     glass_option: 'clear',
     hardware_finish: 'white',
     trim_style: 'standard',
+    project_type: null,
+    door_type: null,
   }
 };
 
@@ -262,6 +264,9 @@ const useVisualizationStore = create(
           selections: { ...state.selections, ...updates }
         }));
       },
+
+      setProjectType: (project_type) => set({ selections: { ...get().selections, project_type } }),
+      setDoorType: (door_type) => set({ selections: { ...get().selections, door_type } }),
 
       resetSelections: () => {
         set({ selections: initialState.selections });
