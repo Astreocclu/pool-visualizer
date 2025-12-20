@@ -53,6 +53,7 @@ const initialState = {
     hasPrev: false
   },
   selections: {
+    // === POOLS SELECTIONS (existing - keep these) ===
     // Screen 1: Size & Shape
     size: 'classic',
     shape: 'rectangle',
@@ -74,6 +75,16 @@ const initialState = {
     lighting: 'none',
     landscaping: 'none',
     furniture: 'none',
+
+    // === WINDOWS SELECTIONS (add these) ===
+    window_type: 'double_hung',
+    window_style: 'traditional',
+    frame_material: 'vinyl',
+    frame_color: 'white',
+    grille_pattern: 'none',
+    glass_option: 'clear',
+    hardware_finish: 'white',
+    trim_style: 'standard',
   }
 };
 
