@@ -45,14 +45,24 @@ Output at the highest resolution possible."""
 
 
 def get_window_frame_prompt(selections: dict) -> str:
-    """Step 2: Replace all window frames with selected options."""
+    """Step 2: Replace/install window frames and doors."""
+    from api.tenants.windows import config
+
+    project_type = next(
+        (p for p in config.PROJECT_TYPES if p['id'] == selections.get('project_type', 'replace_existing')),
+        config.PROJECT_TYPES[0]
+    )
+    door_type = next(
+        (d for d in config.DOOR_TYPES if d['id'] == selections.get('door_type', 'none')),
+        config.DOOR_TYPES[0]
+    )
     window_type = next(
         (w for w in config.WINDOW_TYPES if w['id'] == selections.get('window_type', 'double_hung')),
         config.WINDOW_TYPES[1]
     )
     window_style = next(
-        (s for s in config.WINDOW_STYLES if s['id'] == selections.get('window_style', 'traditional')),
-        config.WINDOW_STYLES[1]
+        (s for s in config.WINDOW_STYLES if s['id'] == selections.get('window_style', 'modern')),
+        config.WINDOW_STYLES[0]
     )
     frame_material = next(
         (m for m in config.FRAME_MATERIALS if m['id'] == selections.get('frame_material', 'vinyl')),
@@ -63,45 +73,46 @@ def get_window_frame_prompt(selections: dict) -> str:
         config.FRAME_COLORS[0]
     )
 
-    return f"""Photorealistic inpainting. Replace ALL windows on this house with new windows.
+    # Build door section if applicable
+    door_section = ""
+    if door_type['id'] != 'none':
+        door_section = f"""
+DOOR INSTALLATION:
+- Door type: {door_type['prompt_hint']}
+- Frame material: {frame_material['prompt_hint']}
+- Frame color: {frame_color['prompt_hint']}
+- Position: Install at main patio/entrance opening
+- For accordion/bi-fold: Show panels in partially open position to demonstrate folding capability
+"""
+
+    # Build project context
+    project_context = {
+        'replace_existing': "Replace ALL existing windows and doors with new ones.",
+        'new_opening': "Create new window and door openings in the walls where specified.",
+        'enclose_patio': "Enclose the patio/porch area with new windows and doors, creating a sunroom effect.",
+    }.get(project_type['id'], "Replace existing windows and doors.")
+
+    return f"""Photorealistic inpainting. {project_context}
 
 WINDOW SPECIFICATIONS:
-- Type: {window_type['prompt_hint']}
+- Window type: {window_type['prompt_hint']}
 - Style: {window_style['prompt_hint']}
 - Frame material: {frame_material['prompt_hint']}
 - Frame color: {frame_color['prompt_hint']}
-
-WINDOW REPLACEMENT REQUIREMENTS:
-- Replace EVERY visible window on the house
-- Maintain exact window opening sizes and positions from original image
-- Keep windows properly aligned and level
-- Window frames should be appropriate width for the material (vinyl slightly thicker than aluminum)
-- Glass should appear clean and new with subtle reflections
-- Maintain consistent style across all windows on the house
-
-WINDOW REALISM:
-- Frames must look like actual {frame_material['name']} material with authentic texture
-- {frame_color['name']} color should be uniform and professional
-- Glass should have realistic reflections (sky, trees, neighboring structures)
-- Subtle depth to frame profile appropriate to {window_type['name']} windows
-- No distortion or warping of window frames
-- Proper weatherseals visible where appropriate
-
-CRITICAL INTEGRATION:
-- Windows must look INSTALLED in the wall, not floating or pasted on
-- Maintain the relationship between window and surrounding siding/trim
-- Shadows cast correctly based on frame depth and sun position
-- Scale must match the house architecture
-- Preserve all non-window elements (doors, siding, roof, landscaping)
-- Windows should look consistent with each other in terms of reflection and lighting
+{door_section}
+INSTALLATION REQUIREMENTS:
+- All windows must have identical frame style and color
+- Maintain proper window proportions relative to wall size
+- Frames should look solid and professionally installed
+- Glass should show subtle reflections of sky/surroundings
+- For new openings: Show clean cuts with proper headers
 
 PRESERVE EXACTLY:
-- House siding, doors, roof, and all architectural features
-- Landscaping, walkways, driveways
-- All structures outside the window replacements
-- Original lighting conditions and atmosphere
+- House structure beyond installation areas
+- Roof, siding, landscaping
+- Original lighting and atmosphere
 
-OUTPUT: Photorealistic image with all windows replaced with new {window_type['name']} windows.
+OUTPUT: Photorealistic image with new windows{' and doors' if door_type['id'] != 'none' else ''} installed.
 Output at the highest resolution possible."""
 
 
