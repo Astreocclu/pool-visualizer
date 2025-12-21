@@ -238,9 +238,25 @@ OUTPUT: Photorealistic final image with all finishing touches.
 Output at the highest resolution possible."""
 
 
-def get_quality_check_prompt(scope: dict = None) -> str:
+def get_quality_check_prompt(selections: dict = None) -> str:
     """Step 6: Quality check comparing clean image to final result."""
-    return """You are a Quality Control AI for pool visualization. You will receive two images.
+    selections = selections or {}
+
+    # Derive scope from selections
+    has_water_features = bool(selections.get('water_features'))
+    has_spa = selections.get('attached_spa', False)
+    has_tanning_ledge = selections.get('tanning_ledge', True)
+
+    # Build feature-specific checks
+    feature_checks = ""
+    if has_water_features or has_spa or has_tanning_ledge:
+        feature_checks = """
+6. FEATURES
+   - Do water features have realistic water flow?
+   - Are built-ins (tanning ledge, spa) properly integrated?
+   - Does furniture/landscaping look natural?"""
+
+    return f"""You are a Quality Control AI for pool visualization. You will receive two images.
 
 IMAGE 1: The REFERENCE image (clean backyard before pool)
 IMAGE 2: The FINAL RESULT (backyard with pool and all features)
@@ -272,12 +288,7 @@ EVALUATE THE VISUALIZATION:
    - Are the house, fence, and trees intact?
    - Is existing landscaping preserved outside work area?
    - Are there any unwanted artifacts or deletions?
-
-6. FEATURES (if applicable)
-   - Do water features have realistic water flow?
-   - Are built-ins (tanning ledge, spa) properly integrated?
-   - Does furniture/landscaping look natural?
-
+{feature_checks}
 SCORING GUIDE:
 - 0.0 to 0.4: FAIL - Major issues (floating pool, impossible geometry, wrong perspective, significant artifacts)
 - 0.5 to 0.6: POOR - Usable but obvious issues (minor floating, perspective slightly off, unnatural edges)
@@ -285,11 +296,11 @@ SCORING GUIDE:
 - 0.9 to 1.0: EXCELLENT - Highly realistic, no obvious issues
 
 RETURN ONLY VALID JSON:
-{
+{{
     "score": <float between 0.0 and 1.0>,
     "issues": [<list of specific issues found, empty if none>],
     "recommendation": "<PASS or REGENERATE>"
-}
+}}
 
 A score below 0.6 should recommend REGENERATE.
 Be strict - homeowners will pay $50K-150K based on this visualization."""
@@ -310,7 +321,7 @@ def get_prompt(step: str, selections: dict = None) -> str:
     elif step == 'finishing':
         return get_finishing_prompt(selections)
     elif step == 'quality_check':
-        return get_quality_check_prompt()
+        return get_quality_check_prompt(selections)
     else:
         raise ValueError(f"Unknown pipeline step: {step}")
 
