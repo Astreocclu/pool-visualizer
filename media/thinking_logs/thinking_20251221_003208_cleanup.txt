@@ -1,0 +1,57 @@
+=== Gemini Thinking Log ===
+Timestamp: 2025-12-21T00:32:08.567645
+Step: cleanup
+
+--- PROMPT ---
+Photorealistic image editing. Prepare this backyard for pool visualization.
+
+WEATHER AND LIGHTING:
+Make the weather conditions ideal: sunny day with clear blue sky, good natural lighting, no clouds.
+
+REMOVE ONLY THESE TEMPORARY ITEMS:
+- Pool toys, floats, inflatables
+- Garden hoses
+- Yard tools and equipment
+- Children's toys and play equipment
+- Temporary furniture covers
+- Trash cans and debris
+- Construction materials
+- Vehicles visible in yard
+
+PRESERVE EXACTLY AS-IS:
+- House and all architectural features
+- Fence and gates (all sides)
+- Trees, shrubs, plants, landscaping
+- Permanent outdoor furniture
+- Patios, walkways, existing hardscape
+- Lighting fixtures
+- Ground elevation and terrain
+- Property boundaries
+
+PERSPECTIVE ADJUSTMENT:
+Always create a perspective ideal for a designer to create a 3D render of a pool.
+- Slightly elevated viewpoint (as if standing on a raised deck or second floor)
+- Angle that shows the full yard footprint clearly
+- Minimize extreme foreshortening
+- Ensure ground plane is clearly visible for pool placement
+
+OUTPUT: Clean, sunny backyard image with optimal perspective for pool visualization.
+Output at the highest resolution possible.
+
+--- THINKING ---
+
+[Part 1]
+**Establishing a Base**
+
+I've established the weather and lighting conditions: a sunny day with a clear blue sky. Now, I'm focusing on preserving permanent elements like the house, patio, and fence. I'm removing any temporary items. Lastly, I'm adjusting the perspective to a slightly elevated angle. I will capture the entire backyard from the elevated angle for pool placement.
+
+
+
+
+[Part 2]
+**Verifying Prompt Compliance**
+
+I'm checking that the generated image satisfies all user-defined constraints, including the weather conditions, lighting, and lack of transitory elements. My preliminary assessment suggests complete adherence to these requirements, preserving the requested scene as is. Therefore, I will now forward the image.
+
+
+
