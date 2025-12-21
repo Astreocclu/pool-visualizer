@@ -1688,3 +1688,23 @@ label.radio-option input[type="radio"]:checked::after {
         height: 48px;
     }
 }
+
+/* Tenant Header */
+.tenant-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+
+.tenant-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--white);
+  margin: 0 0 0.5rem 0;
+}
+
+.tenant-header p {
+  font-size: 1rem;
+  color: var(--light-gray);
+  margin: 0;
+}
