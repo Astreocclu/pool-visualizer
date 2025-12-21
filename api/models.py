@@ -252,6 +252,12 @@ class VisualizationRequest(models.Model):
         help_text="Sales scope (hasPatio, hasWindows, hasDoors, doorType)"
     )
 
+    tenant_id = models.CharField(
+        max_length=50,
+        default='pools',
+        help_text="Tenant identifier (pools, windows, roofs)"
+    )
+
     # Opening counts for pricing
     window_count = models.PositiveIntegerField(
         default=0,
