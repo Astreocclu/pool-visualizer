@@ -93,6 +93,12 @@ WATER APPEARANCE:
 - Water level approximately 6 inches below coping
 - Natural depth shadows on pool walls visible through water
 
+TEXAS CLIMATE CONSIDERATIONS:
+- Pool designed for 100°F+ summer temperatures
+- Pebble/quartz finishes that resist Texas sun bleaching
+- Coping materials appropriate for barefoot use in extreme heat
+- Equipment placement accounting for full sun exposure
+
 CRITICAL INTEGRATION:
 - Pool must look INSTALLED, not floating or pasted on
 - Shadows cast correctly based on sun position in image
