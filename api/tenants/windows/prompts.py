@@ -40,6 +40,13 @@ WINDOW VISIBILITY:
 - Keep window trim and surrounding siding intact
 - Remove any obstructions blocking window views
 
+PERSPECTIVE ADJUSTMENT:
+Create a perspective ideal for window replacement visualization:
+- Front or 3/4 view showing the main facade
+- Angle that clearly shows all window openings on visible walls
+- Minimize extreme angles that distort window proportions
+- Ensure window planes are clearly visible for accurate rendering
+
 OUTPUT: Clean, well-lit house exterior image with all windows clearly visible.
 Output at the highest resolution possible."""
 
