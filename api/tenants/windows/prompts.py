@@ -472,9 +472,15 @@ OUTPUT: Photorealistic image with {enclosure_type['name']} professionally instal
 Output at the highest resolution possible."""
 
 
-def get_quality_check_prompt(scope: dict = None) -> str:
+def get_quality_check_prompt(selections: dict = None) -> str:
     """Step 7: Quality check comparing original to final result."""
-    scope = scope or {}
+    selections = selections or {}
+
+    # Derive scope from selections
+    scope = {
+        'doors': selections.get('door_type') and selections.get('door_type') != 'none',
+        'patio_enclosure': selections.get('enclosure_type') and selections.get('enclosure_type') != 'none',
+    }
 
     # Build additional checks based on scope
     additional_checks = []
@@ -564,10 +570,9 @@ A score below 0.6 should recommend REGENERATE.
 Be strict - homeowners will make purchasing decisions based on this visualization."""
 
 
-def get_prompt(step: str, selections: dict = None, scope: dict = None) -> str:
+def get_prompt(step: str, selections: dict = None) -> str:
     """Get prompt for a specific pipeline step."""
     selections = selections or {}
-    scope = scope or {}
 
     if step == 'cleanup':
         return get_cleanup_prompt()
@@ -582,7 +587,7 @@ def get_prompt(step: str, selections: dict = None, scope: dict = None) -> str:
     elif step == 'patio_enclosure':
         return get_patio_enclosure_prompt(selections)
     elif step == 'quality_check':
-        return get_quality_check_prompt(scope)
+        return get_quality_check_prompt(selections)
     else:
         raise ValueError(f"Unknown pipeline step: {step}")
 
