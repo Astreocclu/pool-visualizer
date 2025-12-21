@@ -114,6 +114,12 @@ INSTALLATION REQUIREMENTS:
 - Glass should show subtle reflections of sky/surroundings
 - For new openings: Show clean cuts with proper headers
 
+TEXAS CLIMATE CONSIDERATIONS:
+- Windows rated for intense UV exposure and 100°F+ temperatures
+- Low-E glass appropriate for Texas sun and heat reduction
+- Frame materials that resist warping in extreme heat
+- Energy-efficient glazing for high cooling loads
+
 PRESERVE EXACTLY:
 - House structure beyond installation areas
 - Roof, siding, landscaping
