@@ -173,7 +173,7 @@ class AIEnhancedImageProcessor:
                     
                 # Run security audit on original image
                 logger.info("Running security audit...")
-                visualization_request.update_progress(92, "Analyzing security vulnerabilities...")
+                visualization_request.update_progress(92, "Analyzing image quality...")
                 try:
                     audit_service = AuditService()
                     audit_report = audit_service.perform_audit(visualization_request)
@@ -188,7 +188,7 @@ class AIEnhancedImageProcessor:
                     from .utils.pdf_generator import generate_visualization_pdf
 
                     pdf_buffer = generate_visualization_pdf(visualization_request)
-                    pdf_filename = f"security_report_{visualization_request.id}.pdf"
+                    pdf_filename = f"visualization_report_{visualization_request.id}.pdf"
                     visualization_request.generated_pdf.save(
                         pdf_filename,
                         ContentFile(pdf_buffer.getvalue()),
