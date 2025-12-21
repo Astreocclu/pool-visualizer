@@ -30,18 +30,19 @@ class ScreenVisualizer:
         self.client = genai.Client(api_key=self.api_key)
         self.model_name = "gemini-3-pro-image-preview"
 
-    def process_pipeline(self, original_image: Image.Image, scope: dict, options: dict, progress_callback=None) -> Tuple[Image.Image, Image.Image, float, str]:
+    def process_pipeline(self, original_image: Image.Image, scope: dict, options: dict, progress_callback=None, tenant_id: str = None) -> Tuple[Image.Image, Image.Image, float, str]:
         """
         Executes the visualization pipeline sequentially based on tenant configuration.
-        
+
         Args:
             original_image (Image): The source image.
-            scope (dict): {'windows': bool, 'doors': bool, 'patio': bool}
-            options (dict): {'color': str, 'mesh_type': str}
-            progress_callback (callable, optional): Function to update progress (percent, message).
+            scope (dict): Feature selections
+            options (dict): Style options
+            progress_callback (callable, optional): Function to update progress.
+            tenant_id (str, optional): Tenant identifier for config lookup.
         """
         try:
-            tenant_config = get_tenant_config()
+            tenant_config = get_tenant_config(tenant_id)  # CHANGE THIS LINE
             prompts = tenant_config.get_prompts_module()
             
             current_image = original_image

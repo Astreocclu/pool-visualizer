@@ -121,7 +121,8 @@ class AIEnhancedImageProcessor:
                 "opacity": visualization_request.opacity,
                 "color": visualization_request.frame_color,
                 "mesh_type": visualization_request.mesh_choice,
-                "scope": {} # Default empty scope
+                "scope": {},  # Default empty scope
+                "tenant_id": visualization_request.tenant_id  # ADD THIS
             }
             
             # Extract scope if available (new field)

@@ -113,11 +113,13 @@ class GeminiImageGenerationService(AIImageGenerationService):
                     scope['windows'] = True
 
             # Run the pipeline
+            tenant_id = style_preferences.get('tenant_id', 'pools')  # ADD THIS
             clean_image, result_image, quality_score, quality_reason = self.visualizer.process_pipeline(
-                original_image, 
+                original_image,
                 scope=scope,
                 options=options,
-                progress_callback=progress_callback
+                progress_callback=progress_callback,
+                tenant_id=tenant_id  # ADD THIS
             )
             
             # Convert back to bytes for the result
