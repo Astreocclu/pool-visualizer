@@ -261,12 +261,14 @@ class VisualizationRequestCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'original_image', 'screen_type', 'opacity', 'color',
                   'screen_categories', 'mesh_choice', 'frame_color', 'mesh_color', 'scope',
                   'window_count', 'door_count', 'door_type', 'patio_enclosure',
+                  'tenant_id',
                   'status', 'progress_percentage', 'status_message', 'created_at']
         read_only_fields = ['id', 'status', 'progress_percentage', 'status_message', 'created_at']
         extra_kwargs = {
             'original_image': {'required': True},
             'screen_type': {'required': False, 'allow_null': True},
-            'scope': {'required': False}
+            'scope': {'required': False},
+            'tenant_id': {'required': False}
         }
 
     def validate_original_image(self, value):
