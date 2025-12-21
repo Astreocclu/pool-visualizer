@@ -661,6 +661,173 @@
 }
 
 /* ================================================
+   GENERIC OPTION CARDS (Windows/Roofs tenants)
+   ================================================ */
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.options-grid.three-column {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+    .options-grid.three-column {
+        grid-template-columns: 1fr;
+    }
+}
+
+.option-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.option-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-3px);
+    border-color: var(--gold-muted);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.option-card.selected {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 0 2px var(--gold-primary), 0 8px 25px rgba(212, 175, 55, 0.25);
+    transform: translateY(-3px);
+}
+
+.option-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: var(--gold-primary);
+    color: var(--primary-navy);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    animation: scaleIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.option-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: var(--gold-primary);
+    transition: all 0.3s ease;
+}
+
+.option-card.selected .option-icon {
+    background: var(--gold-primary);
+    color: var(--primary-navy);
+}
+
+.option-name {
+    margin: 0 0 0.5rem 0;
+    color: var(--white);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.option-description {
+    margin: 0;
+    color: var(--slate);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.option-card.selected .option-name {
+    color: var(--gold-primary);
+}
+
+/* Wizard Navigation */
+.wizard-navigation {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-button {
+    padding: 12px 32px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+}
+
+.nav-button.primary {
+    background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-muted) 100%);
+    color: var(--primary-navy);
+    border: none;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+
+.nav-button.primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+.nav-button.primary:disabled {
+    background: var(--light-navy);
+    color: var(--slate);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.nav-button.secondary {
+    background: transparent;
+    border: 1px solid var(--light-slate);
+    color: var(--light-slate);
+}
+
+.nav-button.secondary:hover {
+    border-color: var(--white);
+    color: var(--white);
+}
+
+/* Step Title/Subtitle */
+.step-title {
+    font-size: 1.8rem;
+    color: var(--white);
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+}
+
+.step-subtitle {
+    color: var(--slate);
+    font-size: 1rem;
+    margin: 0 0 2rem 0;
+    text-align: center;
+}
+
+/* ================================================
    POOLS WIZARD SPECIFIC STYLES
    ================================================ */
 

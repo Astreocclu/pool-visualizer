@@ -2,7 +2,7 @@
 Windows Visualizer - AI Prompts
 Layered rendering pipeline for window replacement visualization.
 
-Pipeline: cleanup → window_frame → grilles_glass → trim → quality_check
+Pipeline: cleanup → window_frame → grilles_glass → trim → doors → patio_enclosure → quality_check
 """
 
 from api.tenants.windows import config
@@ -220,9 +220,277 @@ OUTPUT: Photorealistic image with exterior window trim installed.
 Output at the highest resolution possible."""
 
 
+def get_doors_prompt(selections: dict) -> str:
+    """Step 5: Install doors if selected."""
+    from api.tenants.windows import config
+
+    door_type = next(
+        (d for d in config.DOOR_TYPES if d['id'] == selections.get('door_type', 'none')),
+        config.DOOR_TYPES[0]
+    )
+
+    # Skip if no door selected
+    if door_type['id'] == 'none':
+        return None
+
+    frame_material = next(
+        (m for m in config.FRAME_MATERIALS if m['id'] == selections.get('frame_material', 'vinyl')),
+        config.FRAME_MATERIALS[0]
+    )
+    frame_color = next(
+        (c for c in config.FRAME_COLORS if c['id'] == selections.get('frame_color', 'white')),
+        config.FRAME_COLORS[0]
+    )
+
+    # Build door-specific installation details
+    door_details = {
+        'sliding_glass': """
+SLIDING GLASS DOOR SPECIFICATIONS:
+- Type: Sliding glass patio door with large glass panels
+- Track system: Heavy-duty aluminum track at top and bottom
+- Panels: 2-4 panels depending on width, one or more slide
+- Hardware: Recessed pull handles, keyed lock
+- Threshold: Low-profile aluminum threshold with weather seal
+- Installation: Show door in partially open position to demonstrate sliding action
+- Glass: Large unobstructed panels for maximum view
+""",
+        'french': """
+FRENCH DOOR SPECIFICATIONS:
+- Type: Traditional hinged double doors with glass panels
+- Operation: Both doors open outward or inward with active/passive configuration
+- Panels: Multiple glass panels (lites) in each door with decorative muntins
+- Hardware: Traditional lever handles, deadbolt lock, decorative hinges
+- Installation: Show doors in elegant closed position with astragal between panels
+- Style: Classic divided-lite design with clean, symmetrical appearance
+- Threshold: Standard door threshold with weather stripping
+""",
+        'accordion': """
+ACCORDION FOLDING DOOR SPECIFICATIONS:
+- Type: Multi-panel folding glass door system (typically 4-8 panels)
+- Track system: Heavy-duty top-hung track with bottom guide
+- Operation: Panels fold accordion-style, stacking to one or both sides
+- Hardware: Continuous hinge system between panels, locking handle
+- Installation: Show door in partially folded position (50-75% open) to demonstrate folding capability
+- Panels: Each panel 2-3 feet wide, all panels same size
+- Opening: Can open up to 90% of the wall when fully folded
+- Frame: Minimal frame profile for maximum glass area
+""",
+        'bifold': """
+BI-FOLD DOOR SPECIFICATIONS:
+- Type: Paired folding glass door panels (typically 4-6 panels total)
+- Track system: Top-mounted track with pivot hinges
+- Operation: Panels fold in pairs, connected by hinges
+- Hardware: Pivot hardware at top and bottom, central locking mechanism
+- Installation: Show door partially open (one pair folded) to demonstrate bi-fold action
+- Configuration: Panels fold to one or both sides in pairs
+- Frame: Sturdy frame to support paired panel weight
+- Opening: Creates wide opening when fully folded (80-85% of wall width)
+""",
+    }.get(door_type['id'], '')
+
+    return f"""Photorealistic inpainting. Install {door_type['name']} in the designated patio/entrance opening.
+
+{door_details}
+
+DOOR FRAME REQUIREMENTS:
+- Frame material: {frame_material['prompt_hint']}
+- Frame color: {frame_color['prompt_hint']} (matching existing window frames)
+- Frame should be solid and professionally installed
+- Proper weather sealing and flashing details
+- Frame thickness appropriate to door type and material
+
+GLASS REQUIREMENTS:
+- Large glass panels for maximum light and view
+- Tempered safety glass (required for doors)
+- Subtle reflections showing sky and surrounding environment
+- Clean, professional appearance
+- For multi-panel doors: Consistent spacing between panels
+
+INSTALLATION REALISM:
+- Door must look structurally sound and professionally installed
+- Proper integration with house exterior (siding, trim, foundation)
+- Realistic shadows cast by door frame and panels
+- Appropriate clearance from ground/deck surface
+- Weather seals and threshold details visible
+- Hardware should appear functional and properly positioned
+
+PRESERVE EXACTLY:
+- All windows and their current state
+- House structure, siding, roof
+- Landscaping and existing features
+- Original lighting and atmosphere
+- Any trim or enclosures already installed
+
+OUTPUT: Photorealistic image with {door_type['name']} professionally installed.
+Output at the highest resolution possible."""
+
+
+def get_patio_enclosure_prompt(selections: dict) -> str:
+    """Step 6: Add patio enclosure if selected."""
+    from api.tenants.windows import config
+
+    enclosure_type = next(
+        (e for e in config.PATIO_ENCLOSURE_TYPES if e['id'] == selections.get('enclosure_type', 'none')),
+        config.PATIO_ENCLOSURE_TYPES[0]
+    )
+
+    # Skip if no enclosure selected
+    if enclosure_type['id'] == 'none':
+        return None
+
+    frame_material = next(
+        (m for m in config.FRAME_MATERIALS if m['id'] == selections.get('frame_material', 'vinyl')),
+        config.FRAME_MATERIALS[0]
+    )
+    frame_color = next(
+        (c for c in config.FRAME_COLORS if c['id'] == selections.get('frame_color', 'white')),
+        config.FRAME_COLORS[0]
+    )
+    enclosure_glass = next(
+        (g for g in config.ENCLOSURE_GLASS_TYPES if g['id'] == selections.get('enclosure_glass_type', 'double_pane')),
+        config.ENCLOSURE_GLASS_TYPES[1]
+    )
+
+    # Build enclosure-specific details
+    enclosure_details = {
+        'three_season': f"""
+THREE-SEASON SUNROOM SPECIFICATIONS:
+- Type: Three-season sunroom with combination of glass windows and screen panels
+- Frame: {frame_material['prompt_hint']} frame structure, {frame_color['prompt_hint']} color
+- Windows: {enclosure_glass['prompt_hint']} in operable and fixed configurations
+- Screens: Removable or retractable screen panels for ventilation
+- Roof: Insulated roof panels or glass roof sections
+- Foundation: Connect to existing concrete patio slab or deck
+- Usage: Designed for spring, summer, and fall use (not climate controlled)
+
+STRUCTURAL INTEGRATION:
+- Attach to existing house wall with proper ledger and flashing
+- Posts/columns every 6-8 feet for structural support
+- Knee walls (2-3 feet) with windows above, or floor-to-ceiling glass
+- Gable or shed roof matching house roofline angle
+""",
+        'four_season': f"""
+FOUR-SEASON SUNROOM SPECIFICATIONS:
+- Type: Fully insulated, climate-controlled sunroom addition
+- Frame: {frame_material['prompt_hint']} thermal-break frame, {frame_color['prompt_hint']} color
+- Windows: {enclosure_glass['prompt_hint']} for energy efficiency
+- Roof: Fully insulated roof system with interior ceiling finish
+- Foundation: Insulated foundation walls on existing slab or new foundation
+- HVAC: Visible supply/return vents for heating and cooling
+- Usage: Year-round comfort, true room addition
+
+STRUCTURAL INTEGRATION:
+- Attach to house with proper structural connection and insulation
+- Support posts/columns integrated into wall design
+- Insulated knee walls (2-3 feet) with large windows above
+- Cathedral or flat ceiling with proper insulation and finish
+- Proper roofing that matches or complements house
+""",
+        'screen_room': f"""
+SCREEN ROOM SPECIFICATIONS:
+- Type: Screened patio enclosure with aluminum frame
+- Frame: Aluminum frame structure, {frame_color['prompt_hint']} color (powder-coated)
+- Screens: High-quality fiberglass or aluminum mesh, charcoal or gray color
+- Screen panels: Floor-to-ceiling or with kickplate at bottom
+- Roof: Insulated aluminum roof panels or open to existing patio cover
+- Foundation: Attach to existing concrete patio slab
+- Door: Screen door with aluminum frame and self-closing mechanism
+
+STRUCTURAL INTEGRATION:
+- Aluminum posts every 6-8 feet
+- Attach to house wall with aluminum mounting brackets
+- Screen panels in aluminum channels (top, bottom, sides)
+- Simple, functional design focused on bug protection
+- Minimal sightlines for maximum view
+""",
+        'glass_walls': f"""
+RETRACTABLE GLASS WALL SPECIFICATIONS:
+- Type: Modern sliding/folding glass panel system
+- Frame: {frame_material['prompt_hint']} minimal frame, {frame_color['prompt_hint']} color
+- Glass: {enclosure_glass['prompt_hint']}, floor-to-ceiling panels
+- Operation: Panels slide and stack to one or both sides (show partially open)
+- Track: Top-mounted track system with bottom guide
+- Panels: Frameless or minimal-frame glass panels, each 3-4 feet wide
+- Opening: Opens completely to merge indoor and outdoor spaces
+
+STRUCTURAL INTEGRATION:
+- Header beam integrated into house wall or patio structure
+- Support posts at corners and intervals (if needed)
+- Panels stack neatly when open (show 2-3 panels stacked)
+- Modern, clean aesthetic with minimal visible hardware
+- Proper weather sealing when closed
+""",
+    }.get(enclosure_type['id'], '')
+
+    return f"""Photorealistic inpainting. Add {enclosure_type['name']} enclosing the patio area.
+
+{enclosure_details}
+
+INSTALLATION REQUIREMENTS:
+- Structure must attach to existing house wall
+- Use existing patio slab as foundation (no excavation)
+- Maintain proper scale and proportion relative to house
+- Structure should look professionally designed and permitted
+- Proper roofline integration with house architecture
+- Support posts/columns properly sized and positioned
+
+GLASS/SCREEN REQUIREMENTS:
+- Consistent material throughout the enclosure
+- Realistic reflections in glass (showing sky, trees, surroundings)
+- For screens: Fine mesh texture, slightly transparent appearance
+- Clean, professional installation appearance
+- Proper spacing and alignment of panels
+
+INTEGRATION WITH HOUSE:
+- Enclosure must look like an intentional addition, not an afterthought
+- Siding/trim connection points should be clean and professional
+- Roof should complement existing house roof
+- Color scheme should harmonize with house exterior
+- Appropriate architectural style for the house
+
+PRESERVE EXACTLY:
+- All windows and doors already installed
+- House structure, siding, and roof beyond attachment points
+- Landscaping outside the enclosure area
+- Original lighting and atmosphere
+- Existing trim and features
+
+OUTPUT: Photorealistic image with {enclosure_type['name']} professionally installed around patio.
+Output at the highest resolution possible."""
+
+
 def get_quality_check_prompt(scope: dict = None) -> str:
-    """Step 5: Quality check comparing original to final result."""
-    return """You are a Quality Control AI for window replacement visualization. You will receive two images.
+    """Step 7: Quality check comparing original to final result."""
+    scope = scope or {}
+
+    # Build additional checks based on scope
+    additional_checks = []
+
+    if scope.get('doors'):
+        additional_checks.append("""
+7. DOOR INSTALLATION (if applicable)
+   - Is door positioned correctly in opening?
+   - Does door type match specifications (sliding/french/accordion/bifold)?
+   - Is door frame material and color consistent with windows?
+   - Do multi-panel doors show proper operation (partially open position)?
+   - Are door reflections and glass realistic?
+   - Does hardware appear functional and properly positioned?
+""")
+
+    if scope.get('patio_enclosure'):
+        additional_checks.append("""
+8. PATIO ENCLOSURE (if applicable)
+   - Does enclosure attach naturally to the house wall?
+   - Are support posts/columns properly sized and positioned?
+   - Is the roof properly integrated with house architecture?
+   - Do glass panels or screens look realistic and professionally installed?
+   - Is the enclosure scale appropriate to the patio and house?
+   - Does structure look permitted and professionally designed?
+""")
+
+    additional_checks_text = '\n'.join(additional_checks) if additional_checks else ''
+
+    return f"""You are a Quality Control AI for window replacement visualization. You will receive two images.
 
 IMAGE 1: The REFERENCE image (original house before window replacement)
 IMAGE 2: The FINAL RESULT (house with new windows installed)
@@ -265,7 +533,7 @@ EVALUATE THE VISUALIZATION:
    - Is landscaping preserved outside work area?
    - Are there any unwanted artifacts or deletions?
    - Are reflections in glass appropriate (showing sky, trees, etc.)?
-
+{additional_checks_text}
 SCORING GUIDE:
 - 0.0 to 0.4: FAIL - Major issues (floating windows, wrong sizes, inconsistent styles, significant artifacts)
 - 0.5 to 0.6: POOR - Usable but obvious issues (misaligned windows, unrealistic materials, poor reflections)
@@ -273,19 +541,20 @@ SCORING GUIDE:
 - 0.9 to 1.0: EXCELLENT - Highly realistic, no obvious issues
 
 RETURN ONLY VALID JSON:
-{
+{{
     "score": <float between 0.0 and 1.0>,
     "issues": [<list of specific issues found, empty if none>],
     "recommendation": "<PASS or REGENERATE>"
-}
+}}
 
 A score below 0.6 should recommend REGENERATE.
 Be strict - homeowners will make purchasing decisions based on this visualization."""
 
 
-def get_prompt(step: str, selections: dict = None) -> str:
+def get_prompt(step: str, selections: dict = None, scope: dict = None) -> str:
     """Get prompt for a specific pipeline step."""
     selections = selections or {}
+    scope = scope or {}
 
     if step == 'cleanup':
         return get_cleanup_prompt()
@@ -295,8 +564,12 @@ def get_prompt(step: str, selections: dict = None) -> str:
         return get_grilles_glass_prompt(selections)
     elif step == 'trim':
         return get_trim_prompt(selections)
+    elif step == 'doors':
+        return get_doors_prompt(selections)
+    elif step == 'patio_enclosure':
+        return get_patio_enclosure_prompt(selections)
     elif step == 'quality_check':
-        return get_quality_check_prompt()
+        return get_quality_check_prompt(scope)
     else:
         raise ValueError(f"Unknown pipeline step: {step}")
 

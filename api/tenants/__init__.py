@@ -14,6 +14,7 @@ from django.conf import settings
 from .base import BaseTenantConfig
 from .pools.config import PoolsTenantConfig
 from .windows.config import WindowsTenantConfig
+from .roofs.config import RoofsTenantConfig
 
 logger = logging.getLogger(__name__)
 
@@ -85,3 +86,7 @@ def clear_cache() -> None:
 # Auto-register tenants on module load
 register_tenant(PoolsTenantConfig())
 register_tenant(WindowsTenantConfig())
+register_tenant(RoofsTenantConfig())
+
+# Export for verification
+TENANT_CONFIGS = _TENANT_REGISTRY

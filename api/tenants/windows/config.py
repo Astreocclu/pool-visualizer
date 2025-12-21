@@ -1,7 +1,7 @@
 """
 Windows Vertical Configuration
 Port: 8003
-Pipeline: cleanup → window_frame → grilles_glass → trim → quality_check
+Pipeline: cleanup → window_frame → grilles_glass → trim → doors → patio_enclosure → quality_check
 """
 from api.tenants.base import BaseTenantConfig
 
@@ -43,6 +43,14 @@ DOOR_TYPES = [
         'prompt_hint': 'sliding glass patio door with large glass panels',
         'description': 'Standard sliding glass door for patio access',
         'popular': True,
+        'width_options': ['6ft', '8ft', '12ft'],
+    },
+    {
+        'id': 'french',
+        'name': 'French Door',
+        'prompt_hint': 'french doors with glass panels and traditional styling',
+        'description': 'Classic hinged double doors with glass',
+        'width_options': ['5ft', '6ft'],
     },
     {
         'id': 'accordion',
@@ -50,18 +58,77 @@ DOOR_TYPES = [
         'prompt_hint': 'accordion folding glass door system with multiple panels',
         'description': 'Multi-panel folding door that opens completely',
         'popular': True,
+        'width_options': ['8ft', '12ft', '16ft', '20ft'],
     },
     {
-        'id': 'bi_fold',
+        'id': 'bifold',
         'name': 'Bi-Fold Door',
         'prompt_hint': 'bi-fold glass door with panels that fold in pairs',
         'description': 'Panels fold in pairs for wide opening',
+        'width_options': ['8ft', '12ft', '16ft'],
+    },
+]
+
+PATIO_ENCLOSURE_TYPES = [
+    {
+        'id': 'none',
+        'name': 'No Enclosure',
+        'prompt_hint': '',
+        'description': 'No patio enclosure',
     },
     {
-        'id': 'french',
-        'name': 'French Door',
-        'prompt_hint': 'french doors with glass panels and traditional styling',
-        'description': 'Classic hinged double doors with glass',
+        'id': 'three_season',
+        'name': 'Three-Season Sunroom',
+        'prompt_hint': 'three-season sunroom with glass windows and screens',
+        'description': 'Screen and glass combination, spring through fall use',
+        'popular': True,
+    },
+    {
+        'id': 'four_season',
+        'name': 'Four-Season Sunroom',
+        'prompt_hint': 'four-season sunroom with insulated glass and climate control',
+        'description': 'Fully insulated, year-round comfort with HVAC',
+        'popular': True,
+    },
+    {
+        'id': 'screen_room',
+        'name': 'Screen Room',
+        'prompt_hint': 'screened patio enclosure with aluminum frame',
+        'description': 'Aluminum frame with screen panels, bug protection',
+    },
+    {
+        'id': 'glass_walls',
+        'name': 'Retractable Glass Walls',
+        'prompt_hint': 'retractable glass wall system that opens completely',
+        'description': 'Modern sliding/folding glass panels, opens fully',
+    },
+]
+
+ENCLOSURE_GLASS_TYPES = [
+    {
+        'id': 'single_pane',
+        'name': 'Single Pane',
+        'prompt_hint': 'single pane glass',
+        'description': 'Basic single pane for three-season use',
+    },
+    {
+        'id': 'double_pane',
+        'name': 'Double Pane Insulated',
+        'prompt_hint': 'double pane insulated glass',
+        'description': 'Energy efficient, for four-season comfort',
+        'popular': True,
+    },
+    {
+        'id': 'low_e_double',
+        'name': 'Low-E Double Pane',
+        'prompt_hint': 'low-E double pane glass with energy coating',
+        'description': 'Premium insulation with UV protection',
+    },
+    {
+        'id': 'tinted',
+        'name': 'Tinted Glass',
+        'prompt_hint': 'tinted glass for sun control',
+        'description': 'Reduces glare and heat gain',
     },
 ]
 
@@ -234,7 +301,7 @@ TRIM_STYLES = [
     {'id': 'modern', 'name': 'Modern', 'prompt_hint': 'modern minimal trim'},
 ]
 
-PIPELINE_STEPS = ['cleanup', 'window_frame', 'grilles_glass', 'trim', 'quality_check']
+PIPELINE_STEPS = ['cleanup', 'window_frame', 'grilles_glass', 'trim', 'doors', 'patio_enclosure', 'quality_check']
 
 PRIMARY_COLOR = "#2E7D32"  # Forest Green
 SECONDARY_COLOR = "#66BB6A"
@@ -251,10 +318,12 @@ class WindowsTenantConfig(BaseTenantConfig):
 
     def get_step_config(self, step_name):
         configs = {
-            'cleanup': {'type': 'cleanup', 'progress_weight': 20, 'description': 'Preparing image'},
-            'window_frame': {'type': 'insertion', 'scope_key': None, 'feature_name': 'window', 'progress_weight': 40, 'description': 'Installing window frame'},
-            'grilles_glass': {'type': 'insertion', 'scope_key': 'grilles_glass', 'feature_name': 'grilles_glass', 'progress_weight': 20, 'description': 'Adding grilles and glass'},
-            'trim': {'type': 'insertion', 'scope_key': 'trim', 'feature_name': 'trim', 'progress_weight': 15, 'description': 'Installing trim'},
+            'cleanup': {'type': 'cleanup', 'progress_weight': 15, 'description': 'Preparing image'},
+            'window_frame': {'type': 'insertion', 'scope_key': None, 'feature_name': 'window', 'progress_weight': 30, 'description': 'Installing window frame'},
+            'grilles_glass': {'type': 'insertion', 'scope_key': 'grilles_glass', 'feature_name': 'grilles_glass', 'progress_weight': 15, 'description': 'Adding grilles and glass'},
+            'trim': {'type': 'insertion', 'scope_key': 'trim', 'feature_name': 'trim', 'progress_weight': 10, 'description': 'Installing trim'},
+            'doors': {'type': 'insertion', 'scope_key': 'doors', 'feature_name': 'door', 'progress_weight': 15, 'description': 'Installing doors'},
+            'patio_enclosure': {'type': 'insertion', 'scope_key': 'patio_enclosure', 'feature_name': 'patio_enclosure', 'progress_weight': 10, 'description': 'Adding patio enclosure'},
             'quality_check': {'type': 'quality_check', 'progress_weight': 5, 'description': 'Quality check'},
         }
         return configs.get(step_name, {})
@@ -286,6 +355,8 @@ def get_config():
         'display_name': VERTICAL_DISPLAY_NAME,
         'project_types': PROJECT_TYPES,
         'door_types': DOOR_TYPES,
+        'patio_enclosure_types': PATIO_ENCLOSURE_TYPES,
+        'enclosure_glass_types': ENCLOSURE_GLASS_TYPES,
         'window_types': WINDOW_TYPES,
         'window_styles': WINDOW_STYLES,
         'frame_materials': [

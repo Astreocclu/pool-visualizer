@@ -2,6 +2,86 @@
 
 ---
 
+## Session: 2025-12-14 - Boss Branding Removal + Pool Site Assessment + Water Features Bug Fix
+
+### Context
+- User wanted to completely remove all Boss Security Screens branding from pools-visualizer
+- User wanted to convert the security audit feature to a "pool ground audit" (site assessment)
+- During testing, user discovered water features (fire bowls) weren't being included in generations
+
+### Work Completed
+
+**1. Boss Branding Removal (9 Tasks)**
+- `frontend/src/components/ProcessingScreen/ProcessingScreen.jsx` - "Boss Security Screens" → "Pool Visualizer AI"
+- `frontend/src/pages/ResultDetailPage.js` - "With Screens" → "With Pool", "Show Security Screens" → "Show Pool"
+- `frontend/src/pages/QuoteSuccessPage.js` - Complete rewrite for pool design proposals (Shield→Waves icon, pool specs, pool pricing)
+- `frontend/src/hooks/useTenantConfig.js` - Default config now pools-based
+- `api/tenants/__init__.py` - Default tenant: pools, removed BossTenantConfig import/registration
+- `api/tests/test_tenant_registry.py` - Rewritten to test pools tenant
+- `api/utils/pdf_generator.py` - Complete rewrite for pool design proposals
+- `api/tenants/boss/` - **DELETED** entire directory
+- `api/visualizer/prompts.py` - Updated comment header
+- `frontend/src/components/ProcessingScreen/ProcessingScreen.css` - Updated comment header
+
+**2. Pool Site Assessment Conversion (8 Tasks via Subagent-Driven Development)**
+- `api/audit/prompts.py` - New prompt analyzing backyards for: tree clearance, structure relocation, grading needs, equipment access
+- `api/audit/models.py` - New fields: `has_tree_clearance_needed`, `has_structure_relocation_needed`, `has_grading_needed`, `has_access_considerations`, `site_items`, `assessment_summary` (legacy fields preserved)
+- `api/migrations/0015_add_pool_site_assessment_fields.py` - Migration created and applied
+- `api/audit/services.py` - Updated to use new field names, populate both new and legacy fields
+- `api/audit/serializers.py` - All new fields exposed
+- `api/audit/views.py` - Updated docstrings for pool site assessment
+- `frontend/src/features/audit/AuditResults.js` - Pool-themed UI (blue colors, TreePine/Home/Mountain/Truck icons)
+
+**3. Water Features Bug Fix**
+- **Bug:** `WaterFeaturesStep` and all wizard steps use Zustand store, but `UploadPage` had its own local `useState` for selections
+- **Effect:** Fire bowls selection went to store, but submit used empty local state → `water_features: []` in database
+- **Fix:** Changed `UploadPage.js` to use `selections` from Zustand store instead of local state
+- Also removed "Custom" pool size option from frontend (`PoolSizeShapeStep.js`, `Step5Review.js`, backend `config.py`)
+
+### Current State
+- **Backend:** Running on port 8006, default tenant is "pools"
+- **Frontend:** Running on port 3006
+- **Branding:** All Boss references removed, pools-only
+- **Site Assessment:** Fully converted from security audit to pool site assessment
+- **Water Features:** Bug fixed - selections now properly submitted to backend
+- **Working:** Full wizard flow, AI pipeline, water features selection
+
+### Next Steps
+1. **Test water features** - User should try generation with fire bowls again
+2. **Test site assessment** - Verify the new pool site assessment works on backyard images
+3. **Visual polish** - Site assessment UI may need styling refinements
+
+### Notes
+- **State Management Bug:** The wizard step components all use Zustand store directly, but UploadPage was creating its own local state. This caused a disconnect where UI showed selections but they weren't submitted. Fixed by making UploadPage use the store.
+- **Backwards Compatibility:** Site assessment model keeps all legacy field names with DEPRECATED markers, and services populate both old and new fields. Frontend falls back to legacy field names if new ones missing.
+- **Gemini Plan Failed:** Attempted to use `/geminiplan` for collaborative planning but Gemini API returned 404 errors intermittently. Proceeded with manual planning instead.
+
+### Key Files
+- `frontend/src/pages/UploadPage.js` - Now uses Zustand store selections (the fix)
+- `frontend/src/store/visualizationStore.js` - Central state for wizard selections
+- `api/audit/prompts.py` - Pool site assessment prompt
+- `api/audit/models.py` - Site assessment fields (new + legacy)
+- `api/tenants/pools/config.py` - Pool configuration (removed custom size)
+- `api/tenants/__init__.py` - Tenant registry (pools only now)
+- `docs/plans/2025-12-14-remove-boss-branding.md` - Boss removal plan
+- `docs/plans/2025-12-14-pool-site-assessment.md` - Site assessment conversion plan
+
+### Git Commits This Session
+```
+60e2707 fix: use store selections in UploadPage so water features get submitted
+0b4f714 feat: complete pool site assessment conversion
+1584b5d feat: update PDF generator for pool site assessment
+66a9fcf docs: update audit views docstrings for pool site assessment
+858325a feat: update AuditResults component for pool site assessment
+8b5a213 feat: update AuditReportSerializer with pool site assessment fields
+5d3dc84 feat: update AuditService to use pool site assessment fields
+ad13741 feat: add pool site assessment fields to AuditReport model
+65ac12e feat: convert security audit prompt to pool site assessment
+[earlier] Multiple commits for boss branding removal
+```
+
+---
+
 ## Session: 2025-12-13 - Pools Visualizer Full Implementation
 
 ### Context
