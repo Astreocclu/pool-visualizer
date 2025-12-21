@@ -232,9 +232,42 @@ OUTPUT: Photorealistic gutter installation integrated with house.
 Output at the highest resolution possible."""
 
 
-def get_quality_check_prompt(scope: dict = None) -> str:
+def get_quality_check_prompt(selections: dict = None) -> str:
     """Step 5: Quality check comparing clean image to final result."""
-    return """You are a Quality Control AI for roof/solar visualization. You will receive two images.
+    selections = selections or {}
+
+    # Derive scope from selections
+    has_solar = selections.get('solar_option') and selections.get('solar_option') != 'none'
+    has_gutters = selections.get('gutter_option') and selections.get('gutter_option') != 'none'
+
+    solar_section = ""
+    if has_solar:
+        solar_section = """
+2. SOLAR INSTALLATION
+   - Are panels properly spaced with fire setbacks?
+   - Is mounting style appropriate (flush to roof)?
+   - Are conduit runs logical and clean?
+   - Is panel coverage appropriate for selected level?"""
+
+    gutter_section = ""
+    if has_gutters:
+        gutter_section = """
+3. GUTTER SYSTEM
+   - Are gutters properly sloped toward downspouts?
+   - Are downspouts logically positioned?
+   - Does gutter style match specification?"""
+
+    # Adjust numbering based on what sections are present
+    perspective_num = 2
+    if has_solar:
+        perspective_num += 1
+    if has_gutters:
+        perspective_num += 1
+
+    texas_num = perspective_num + 1
+    preservation_num = texas_num + 1
+
+    return f"""You are a Quality Control AI for roof/solar visualization. You will receive two images.
 
 IMAGE 1: The REFERENCE image (original house before roof work)
 IMAGE 2: The FINAL RESULT (house with new roof and optional solar/gutters)
@@ -247,31 +280,21 @@ EVALUATE THE VISUALIZATION:
    - Do penetrations (vents, chimneys) have correct flashing?
    - Is material texture realistic for the selected type?
    - Is color consistent across all roof planes?
-
-2. SOLAR INSTALLATION (if present)
-   - Are panels properly spaced with fire setbacks?
-   - Is mounting style appropriate (flush to roof)?
-   - Are conduit runs logical and clean?
-   - Is panel coverage appropriate for selected level?
-
-3. GUTTER SYSTEM (if present)
-   - Are gutters properly sloped toward downspouts?
-   - Are downspouts logically positioned?
-   - Does gutter style match specification?
-
-4. PERSPECTIVE AND SCALE
+{solar_section}
+{gutter_section}
+{perspective_num}. PERSPECTIVE AND SCALE
    - Does the roof maintain original perspective exactly?
    - Is scale correct relative to house and surroundings?
    - Do shadows from roof/panels match sun direction?
    - Are architectural proportions preserved?
 
-5. TEXAS-SPECIFIC CHECKS
+{texas_num}. TEXAS-SPECIFIC CHECKS
    - Does material show appropriate heat/UV characteristics?
    - Are hail/wind considerations addressed (proper fastening)?
    - Is color appropriate for thermal performance?
    - Are solar panels angled for Texas latitude (~30°)?
 
-6. PRESERVATION
+{preservation_num}. PRESERVATION
    - Are walls, windows, doors completely unchanged?
    - Is landscaping preserved as expected?
    - Are there any unwanted artifacts or deletions?
@@ -286,11 +309,11 @@ SCORING GUIDE:
 CRITICAL: Homeowners invest $15K-$80K based on these visualizations.
 
 RETURN ONLY VALID JSON:
-{
+{{
     "score": <float between 0.0 and 1.0>,
     "issues": [<list of specific issues found, empty if none>],
     "recommendation": "<PASS or REGENERATE>"
-}
+}}
 
 Score below 0.6 should REGENERATE."""
 
@@ -308,7 +331,7 @@ def get_prompt(step: str, selections: dict = None) -> str:
     elif step == 'gutters_trim':
         return get_gutters_trim_prompt(selections)
     elif step == 'quality_check':
-        return get_quality_check_prompt()
+        return get_quality_check_prompt(selections)
     else:
         raise ValueError(f"Unknown pipeline step: {step}")
 
