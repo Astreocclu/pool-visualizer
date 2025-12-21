@@ -5,8 +5,6 @@ import ResultsPage from './pages/ResultsPage';
 import ResultDetailPage from './pages/ResultDetailPage';
 import QuoteSuccessPage from './pages/QuoteSuccessPage';
 import UploadPage from './pages/UploadPage';
-import WindowsUploadPage from './pages/WindowsUploadPage';
-import RoofsUploadPage from './pages/RoofsUploadPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ScreenTypesPage from './pages/ScreenTypesPage';
@@ -115,23 +113,15 @@ function App() {
             </ProtectedRoute>
           } />
 
-          <Route path="/upload" element={
+          {/* Single dynamic upload route for all tenants */}
+          <Route path="/upload/:tenantId" element={
             <ProtectedRoute>
               <UploadPage />
             </ProtectedRoute>
           } />
 
-          <Route path="/upload/windows" element={
-            <ProtectedRoute>
-              <WindowsUploadPage />
-            </ProtectedRoute>
-          } />
-
-          <Route path="/upload/roofs" element={
-            <ProtectedRoute>
-              <RoofsUploadPage />
-            </ProtectedRoute>
-          } />
+          {/* Redirect /upload to /upload/pools for backwards compatibility */}
+          <Route path="/upload" element={<Navigate to="/upload/pools" replace />} />
 
           <Route path="/screentypes" element={
             <ProtectedRoute>
