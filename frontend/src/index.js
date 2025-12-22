@@ -8,7 +8,7 @@ import reportWebVitals from './reportWebVitals';
 // Debug error capture - POST all errors to /api/debug/errors/
 const DEBUG_ENDPOINT = process.env.NODE_ENV === 'production'
   ? '/api/debug/errors/'
-  : 'http://127.0.0.1:8006/api/debug/errors/';
+  : 'http://127.0.0.1:8000/api/debug/errors/';
 
 const postError = (errorData) => {
   fetch(DEBUG_ENDPOINT, {

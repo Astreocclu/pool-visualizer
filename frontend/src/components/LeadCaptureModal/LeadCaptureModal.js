@@ -121,7 +121,7 @@ const LeadCaptureModal = ({ isOpen, onClose, visualizationId, isSalesRep = false
         <div className="modal-content success-content" onClick={e => e.stopPropagation()}>
           <CheckCircle size={64} className="success-icon" />
           <h2>Download Started!</h2>
-          <p>Your security report is downloading.</p>
+          <p>Your quote & review is downloading.</p>
         </div>
       </div>
     );
@@ -136,8 +136,8 @@ const LeadCaptureModal = ({ isOpen, onClose, visualizationId, isSalesRep = false
 
         <div className="modal-header">
           <Download size={32} className="modal-icon" />
-          <h2>Get Your Free Security Report</h2>
-          <p>Enter your details to download your personalized security assessment.</p>
+          <h2>Get Your Free Quote & Review</h2>
+          <p>Enter your details to download your personalized quote and project review.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="lead-form">
@@ -271,7 +271,7 @@ const LeadCaptureModal = ({ isOpen, onClose, visualizationId, isSalesRep = false
             ) : (
               <>
                 <Download size={20} />
-                Download Security Report
+                Download Quote & Review
               </>
             )}
           </button>

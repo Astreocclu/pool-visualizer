@@ -330,3 +330,34 @@ def get_prompt(step: str, selections: dict = None) -> str:
 def get_screen_insertion_prompt(feature_type: str, options: dict) -> str:
     """Compatibility wrapper for tenant pipeline."""
     return get_pool_shell_prompt(options)
+
+
+def get_reference_insertion_prompt(feature_type: str, options: dict) -> str:
+    """
+    Generate prompt for reference-based insertion.
+    Uses contractor's reference image as the visual guide.
+    """
+    # Get relevant option for this feature
+    if feature_type == 'pool':
+        product_desc = f"{options.get('pool_shape', 'rectangular')} pool with {options.get('interior_finish', 'plaster')} finish"
+    elif feature_type == 'deck':
+        product_desc = f"{options.get('deck_material', 'travertine')} deck in {options.get('deck_color', 'cream')}"
+    else:
+        product_desc = feature_type
+
+    return f"""You are given TWO images:
+1. REFERENCE IMAGE (first): Shows the exact {feature_type} product to install
+2. TARGET IMAGE (second): Customer's backyard photo
+
+TASK: Install the {feature_type} from the reference image into the target backyard.
+
+PRODUCT DETAILS: {product_desc}
+
+REQUIREMENTS:
+- Match the exact appearance and style from the reference
+- Adjust perspective and scale to fit naturally in the target
+- Maintain realistic lighting, shadows, and reflections
+- Keep the installation looking professional
+- Blend seamlessly with existing landscaping
+
+OUTPUT: A photorealistic composite showing the reference product installed in the customer's backyard."""

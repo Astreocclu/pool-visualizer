@@ -123,6 +123,9 @@ class VisualizationRequestViewSet(viewsets.ModelViewSet):
 
             logger.info(f"VisualizationRequest created: ID={instance.id}, User={user.username}")
 
+            # Calculate pricing if pools tenant
+            self._calculate_pricing(instance)
+
             # Trigger AI processing
             self._trigger_ai_processing(instance)
 
@@ -248,6 +251,53 @@ class VisualizationRequestViewSet(viewsets.ModelViewSet):
         thread.start()
 
         logger.info(f"AI-enhanced processing started for request {instance.id}")
+
+    def _calculate_pricing(self, instance):
+        """
+        Calculate pricing for the visualization request based on tenant and scope.
+        """
+        try:
+            from api.pricing.calculators import get_calculator, CalculatorNotFoundError
+
+            # Only calculate for pools tenant (add others as implemented)
+            if instance.tenant_id != 'pools':
+                return
+
+            # Build pricing config from visualization scope
+            scope = instance.scope or {}
+            pricing_config = {
+                'pool_size': scope.get('pool_size', 'classic'),
+                'shape': scope.get('shape', 'rectangle'),
+                'interior_finish': scope.get('interior_finish', 'white_plaster'),
+                'deck_material': scope.get('deck_material', 'travertine'),
+                'deck_sqft': scope.get('deck_sqft', 600),
+                'water_features': scope.get('water_features', []),
+                'built_in_features': scope.get('built_in_features', {}),
+            }
+
+            calculator = get_calculator('pools')
+            price_result = calculator.calculate_final_price(pricing_config)
+
+            # Convert Decimals to strings for JSON storage
+            instance.price_data = {
+                'subtotal': str(price_result['subtotal']),
+                'overhead': str(price_result['overhead']),
+                'profit': str(price_result['profit']),
+                'tax': str(price_result['tax']),
+                'total': str(price_result['total']),
+                'line_items': [
+                    {**item, 'unit_price': str(item['unit_price']), 'total': str(item['total'])}
+                    for item in price_result['line_items']
+                ],
+                'type': price_result['type'],
+            }
+            instance.save(update_fields=['price_data'])
+            logger.info(f"Pricing calculated for request {instance.id}: ${price_result['total']}")
+
+        except CalculatorNotFoundError:
+            logger.debug(f"No pricing calculator for tenant: {instance.tenant_id}")
+        except Exception as e:
+            logger.warning(f"Pricing calculation failed for request {instance.id}: {str(e)}")
 
 
 class GeneratedImageViewSet(viewsets.ReadOnlyModelViewSet):

@@ -1,5 +1,19 @@
 # CLAUDE.md - Project Rules for Claude Code
 
+## Project Overview
+**testhome-visualizer** - Multi-tenant AI visualization app for home improvement products.
+
+| Service | Port |
+|---------|------|
+| Backend (Django) | 8000 |
+| Frontend (React) | 3000 |
+
+### Active Tenants
+- **pools** - Pool enclosure visualizations (default)
+- **screens** - Security screen visualizations
+- **windows** - Window replacement visualizations
+- **roofs** - Roofing visualizations
+
 ## Working Style
 - When I share a problem, analyze it first and wait for my reply before making changes
 - Break large tasks into 3-5 subtasks and confirm the plan before starting
@@ -53,21 +67,20 @@ master (stable)
 
 ### Backend (Django)
 ```bash
-cd backend
-python manage.py runserver        # dev server
-python manage.py test             # run tests
-python manage.py makemigrations   # create migrations
-python manage.py migrate          # apply migrations
-celery -A config worker -l info   # celery worker
+source venv/bin/activate
+python3 manage.py runserver 8000   # dev server on port 8000
+python3 manage.py test             # run tests
+python3 manage.py makemigrations   # create migrations
+python3 manage.py migrate          # apply migrations
+celery -A config worker -l info    # celery worker
 ```
 
 ### Frontend (React)
 ```bash
 cd frontend
-npm run dev      # dev server
+npm start        # dev server on port 3000
 npm run build    # production build
 npm run test     # run tests
-npx cypress open # E2E tests
 ```
 
 ## Code Style
@@ -93,6 +106,9 @@ npx cypress open # E2E tests
 - **Storage:** AWS S3
 
 ## Project-Specific Notes
-- This is a pools visualizer project - AI generates photorealistic pool designs in backyard photos
-- User selects pool shape, surface finish, deck material, and optional water features
-- AI prompts currently reference security screens (inherited from fork) - will be updated separately
+- Multi-tenant AI visualization platform for home improvement products
+- Each tenant has its own config (product options) and prompts (AI instructions)
+- Tenant configs are in `api/tenants/{tenant_name}/`
+- Reference Image System allows contractors to upload product photos for AI compositing
+- AI pipeline: Cleanup → Feature Insertion → Quality Check
+- Uses Google Gemini Nano Banana Pro for image editing

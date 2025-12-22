@@ -4,6 +4,7 @@ import { Check } from 'lucide-react';
 import { createVisualizationRequest } from '../services/api';
 import useVisualizationStore from '../store/visualizationStore';
 import { getTenantConfig, isValidTenant } from '../config/tenants';
+import { getTenantContent } from '../content';
 
 // Pool steps
 import PoolSizeShapeStep from '../components/UploadWizard/PoolSizeShapeStep';
@@ -62,8 +63,9 @@ const UploadPage = () => {
   const navigate = useNavigate();
   const { selections } = useVisualizationStore();
 
-  // Get tenant configuration
+  // Get tenant configuration and content
   const tenantConfig = useMemo(() => getTenantConfig(tenantId), [tenantId]);
+  const content = useMemo(() => getTenantContent(tenantId), [tenantId]);
   const steps = tenantConfig.steps;
   const totalSteps = steps.length;
 
@@ -148,10 +150,20 @@ const UploadPage = () => {
 
   return (
     <div className="upload-page">
-      {/* Tenant header */}
-      <div className="tenant-header">
-        <h1>{tenantConfig.name}</h1>
-        <p>{tenantConfig.description}</p>
+      {/* Hero Section */}
+      <div className="hero-section">
+        <h1>{content.hero.headline}</h1>
+        <p className="hero-subheadline">{content.hero.subheadline}</p>
+      </div>
+
+      {/* Value Propositions */}
+      <div className="value-props">
+        {content.valueProps.map((prop, idx) => (
+          <div key={idx} className="value-prop">
+            <h3>{prop.title}</h3>
+            <p>{prop.description}</p>
+          </div>
+        ))}
       </div>
 
       {/* Progress bar */}

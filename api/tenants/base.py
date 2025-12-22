@@ -4,7 +4,10 @@ from typing import Dict, List, Tuple, Any
 
 class BaseTenantConfig(ABC):
     """Base class all tenant configs must implement."""
-    
+
+    # Opt-in for Reference Image System
+    supports_reference_images: bool = False
+
     @property
     @abstractmethod
     def tenant_id(self) -> str:

@@ -340,3 +340,29 @@ def get_prompt(step: str, selections: dict = None) -> str:
 def get_screen_insertion_prompt(feature_type: str, options: dict) -> str:
     """Compatibility wrapper for tenant pipeline."""
     return get_roof_material_prompt(options)
+
+
+def get_reference_insertion_prompt(feature_type: str, options: dict) -> str:
+    """
+    Generate prompt for reference-based insertion.
+    Uses contractor's reference image as the visual guide.
+    """
+    material = options.get('roofing_material', options.get('material', 'shingle'))
+    color = options.get('roof_color', options.get('color', 'charcoal'))
+
+    return f"""You are given TWO images:
+1. REFERENCE IMAGE (first): Shows the exact {feature_type} material/product
+2. TARGET IMAGE (second): Customer's home photo
+
+TASK: Replace the roof in the target image with the roofing material shown in the reference.
+
+PRODUCT DETAILS: {material} roofing in {color}
+
+REQUIREMENTS:
+- Match the exact texture, color ({color}), and pattern from the reference
+- Maintain the existing roof shape and architecture
+- Adjust for proper perspective and scale
+- Ensure realistic lighting and shadows on the new roof
+- Keep gutters, vents, and other roof features appropriately placed
+
+OUTPUT: A photorealistic composite showing the reference roofing material on the customer's home."""

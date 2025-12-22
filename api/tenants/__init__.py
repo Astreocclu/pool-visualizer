@@ -15,6 +15,7 @@ from .base import BaseTenantConfig
 from .pools.config import PoolsTenantConfig
 from .windows.config import WindowsTenantConfig
 from .roofs.config import RoofsTenantConfig
+from .screens.config import ScreensTenantConfig
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +88,7 @@ def clear_cache() -> None:
 register_tenant(PoolsTenantConfig())
 register_tenant(WindowsTenantConfig())
 register_tenant(RoofsTenantConfig())
+register_tenant(ScreensTenantConfig())
 
 # Export for verification
 TENANT_CONFIGS = _TENANT_REGISTRY

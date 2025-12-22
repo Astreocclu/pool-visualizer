@@ -55,6 +55,7 @@ SECONDARY_COLOR = "#FF7043"
 class RoofsTenantConfig(BaseTenantConfig):
     tenant_id = 'roofs'
     display_name = VERTICAL_DISPLAY_NAME
+    supports_reference_images = True
 
     def get_pipeline_steps(self):
         return PIPELINE_STEPS

@@ -45,4 +45,7 @@ urlpatterns = [
 
     # Debug endpoints
     path('debug/errors/', debug_errors, name='debug-errors'),
+
+    # Pricing endpoints
+    path('pricing/', include('api.pricing.urls')),
 ]

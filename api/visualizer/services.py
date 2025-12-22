@@ -202,6 +202,88 @@ class ScreenVisualizer:
         except Exception as e:
             logger.warning(f"Failed to log thinking: {e}")
 
+    def _call_gemini_edit_with_reference(
+        self,
+        target_image: Image.Image,
+        reference_image: Image.Image,
+        prompt: str,
+        step_name: str = "unknown"
+    ) -> Image.Image:
+        """
+        Call Gemini with a reference image for compositing.
+
+        Args:
+            target_image: The cleaned customer photo
+            reference_image: The reference product image to composite
+            prompt: Instructions for compositing
+            step_name: Name for logging
+
+        Returns:
+            PIL Image with reference composited onto target
+        """
+        try:
+            config_args = {
+                "response_modalities": ["TEXT", "IMAGE"],
+            }
+
+            if hasattr(types, 'ThinkingConfig'):
+                config_args['thinking_config'] = types.ThinkingConfig(include_thoughts=True)
+
+            if hasattr(types, 'ImageGenerationConfig'):
+                config_args['image_generation_config'] = types.ImageGenerationConfig(
+                    guidance_scale=70,
+                    person_generation="dont_generate_people"
+                )
+
+            # Retry logic
+            max_retries = 4
+            for attempt in range(max_retries):
+                try:
+                    response = self.client.models.generate_content(
+                        model=self.model_name,
+                        contents=[reference_image, target_image, prompt],  # Reference first
+                        config=types.GenerateContentConfig(**config_args)
+                    )
+                    break
+                except Exception as e:
+                    if "429" in str(e) and attempt < max_retries - 1:
+                        wait_time = 10 * (attempt + 1)
+                        logger.warning(f"Rate limited, waiting {wait_time}s (attempt {attempt + 1})")
+                        time.sleep(wait_time)
+                    else:
+                        raise e
+
+            # Log thinking/token usage
+            if hasattr(response, 'usage_metadata') and response.usage_metadata:
+                usage = response.usage_metadata
+                thinking_tokens = getattr(usage, 'thoughts_token_count', 0) or 0
+                total_tokens = getattr(usage, 'total_token_count', 0) or 0
+                logger.info(f"Gemini Usage [{step_name}] - Thinking: {thinking_tokens}, Total: {total_tokens}")
+
+            # Extract image from response
+            result_image = None
+            thinking_text = []
+
+            if response.candidates and response.candidates[0].content.parts:
+                for part in response.candidates[0].content.parts:
+                    if hasattr(part, 'text') and part.text:
+                        thinking_text.append(part.text)
+                    if hasattr(part, 'inline_data') and part.inline_data:
+                        from io import BytesIO
+                        result_image = Image.open(BytesIO(part.inline_data.data))
+
+            if thinking_text:
+                self._log_thinking(step_name, prompt, thinking_text)
+
+            if result_image is None:
+                raise ScreenVisualizerError(f"No image in Gemini response for step {step_name}")
+
+            return result_image
+
+        except Exception as e:
+            logger.error(f"Reference edit failed for step {step_name}: {e}")
+            raise ScreenVisualizerError(f"Reference edit failed: {e}") from e
+
     def _call_gemini_json(self, contents: List[Any], prompt: str) -> dict:
         """
         Helper method to handle API call for JSON text response.

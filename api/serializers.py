@@ -160,7 +160,7 @@ class VisualizationRequestDetailSerializer(serializers.ModelSerializer):
             'id', 'user', 'original_image_url', 'clean_image_url', 'screen_type_display',
             'status', 'created_at', 'updated_at', 'task_id', 'results',
             'processing_started_at', 'processing_completed_at', 'processing_duration',
-            'error_message', 'progress_percentage', 'status_message',
+            'error_message', 'progress_percentage', 'status_message', 'price_data',
             # Write-only fields for creation
             'original_image', 'screen_type', 'opacity', 'color',
             'screen_categories', 'mesh_choice', 'frame_color', 'mesh_color', 'scope',
@@ -170,7 +170,7 @@ class VisualizationRequestDetailSerializer(serializers.ModelSerializer):
             'id', 'user', 'status', 'created_at', 'updated_at', 'task_id',
             'results', 'original_image_url', 'clean_image_url', 'screen_type_display',
             'processing_started_at', 'processing_completed_at', 'error_message',
-            'progress_percentage', 'status_message'
+            'progress_percentage', 'status_message', 'price_data'
         ]
         extra_kwargs = {
             'original_image': {

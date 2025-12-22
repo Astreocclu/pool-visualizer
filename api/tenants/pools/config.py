@@ -160,6 +160,8 @@ SECONDARY_COLOR = "#00b4d8"
 class PoolsTenantConfig(BaseTenantConfig):
     """Pools vertical tenant configuration."""
 
+    supports_reference_images = True
+
     tenant_id = 'pools'
     display_name = VERTICAL_DISPLAY_NAME
 

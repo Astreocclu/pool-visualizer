@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Shield, Download } from 'lucide-react';
 import {
@@ -6,6 +6,7 @@ import {
   regenerateVisualizationRequest,
   getAuditReport
 } from '../services/api';
+import { getTenantContent } from '../content';
 import './ResultDetailPage.css';
 
 import Skeleton from '../components/Common/Skeleton';
@@ -23,15 +24,24 @@ const ResultDetailPage = () => {
   const [showOriginal, setShowOriginal] = useState(true);
   const [auditReport, setAuditReport] = useState(null);
   const [showLeadModal, setShowLeadModal] = useState(false);
+  const [content, setContent] = useState(null);
 
   // Detect sales rep mode
   const isSalesRep = searchParams.get('rep') === 'true';
+
+  const pollFailCountRef = useRef(0);
 
   const fetchRequestDetails = useCallback(async () => {
     try {
       const data = await getVisualizationRequestById(id);
       setRequest(data);
       setError(null);
+      pollFailCountRef.current = 0; // Reset on success
+
+      // Load tenant-specific content
+      if (data.tenant_id) {
+        setContent(getTenantContent(data.tenant_id));
+      }
 
       if (data.status === 'complete' || data.status === 'failed') {
         setIsLoading(false);
@@ -52,11 +62,21 @@ const ResultDetailPage = () => {
       }
     } catch (err) {
       console.error(`Error fetching visualization request #${id}:`, err);
-      if (err.status === 404 || err.response?.status === 404) {
-        setError(`Visualization request #${id} not found.`);
-        return true;
-      } else {
-        setError('Failed to load visualization request details. Please try again later.');
+
+      // Track consecutive failures
+      pollFailCountRef.current += 1;
+
+      // After 3 consecutive failures, stop polling and show error
+      if (pollFailCountRef.current >= 3) {
+        if (err.status === 401 || err.response?.status === 401) {
+          setError('Session expired. Please refresh the page and log in again.');
+        } else if (err.status === 404 || err.response?.status === 404) {
+          setError(`Visualization request #${id} not found.`);
+        } else {
+          setError('Connection lost. Please refresh the page.');
+        }
+        setIsLoading(false);
+        return true; // Stop polling on persistent errors
       }
     } finally {
       if (!isRegenerating) {
@@ -185,7 +205,7 @@ const ResultDetailPage = () => {
             ) : (
               <div className="placeholder-image">Processing...</div>
             )}
-            <span className="label after-label">With Pool</span>
+            <span className="label after-label">{content?.results?.afterLabel || 'After'}</span>
           </div>
 
           <div className="toggle-button-container">
@@ -193,7 +213,7 @@ const ResultDetailPage = () => {
               className={`btn-toggle-view ${!showOriginal ? 'active' : ''}`}
               onClick={() => setShowOriginal(!showOriginal)}
             >
-              {showOriginal ? 'Show Pool' : 'Show Original'}
+              {showOriginal ? (content?.results?.toggleShowResult || 'Show Result') : (content?.results?.toggleShowOriginal || 'Show Original')}
             </button>
           </div>
         </div>
@@ -202,23 +222,19 @@ const ResultDetailPage = () => {
       {/* AI Enhancement Disclaimer */}
       {request.status === 'complete' && (
         <p className="ai-disclaimer">
-          AI-enhanced visualization. Lighting and weather conditions may vary from actual appearance.
+          {content?.results?.aiDisclaimer || 'AI-enhanced visualization. Actual appearance may vary.'}
         </p>
       )}
 
-      {/* Simplified Security Teaser + CTA */}
+      {/* Quote & Report CTA */}
       {request.status === 'complete' && (
         <div className="security-report-teaser">
           <div className="teaser-content">
             <Shield size={32} className="teaser-icon" />
             <div className="teaser-text">
-              <h3>
-                {vulnerabilityCount > 0
-                  ? `${vulnerabilityCount} Security Vulnerabilit${vulnerabilityCount === 1 ? 'y' : 'ies'} Detected`
-                  : 'Security Analysis Complete'}
-              </h3>
+              <h3>Your Quote & Review is Ready</h3>
               <p>
-                Your free security assessment reveals what intruders see when they look at your home—and exactly how to stop them.
+                We've generated a personalized quote and detailed review for you in a free PDF.
               </p>
             </div>
           </div>
@@ -234,10 +250,12 @@ const ResultDetailPage = () => {
             }}
           >
             <Download size={20} />
-            Download Your Free Security Report
+            Get Your Free Quote & Review
           </button>
         </div>
       )}
+
+      {/* Pricing hidden - included in PDF only */}
 
       <div className="action-bar">
         <Link to="/results" className="btn btn-secondary">

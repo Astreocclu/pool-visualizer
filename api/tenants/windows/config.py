@@ -312,6 +312,7 @@ class WindowsTenantConfig(BaseTenantConfig):
 
     tenant_id = 'windows'
     display_name = VERTICAL_DISPLAY_NAME
+    supports_reference_images = True
 
     def get_pipeline_steps(self):
         return PIPELINE_STEPS

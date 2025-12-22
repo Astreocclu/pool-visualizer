@@ -596,3 +596,29 @@ def get_prompt(step: str, selections: dict = None) -> str:
 def get_screen_insertion_prompt(feature_type: str, options: dict) -> str:
     """Compatibility wrapper for tenant pipeline."""
     return get_window_frame_prompt(options)
+
+
+def get_reference_insertion_prompt(feature_type: str, options: dict) -> str:
+    """
+    Generate prompt for reference-based insertion.
+    Uses contractor's reference image as the visual guide.
+    """
+    frame_color = options.get('frame_color', options.get('color', 'white'))
+    style = options.get('window_style', 'double-hung')
+
+    return f"""You are given TWO images:
+1. REFERENCE IMAGE (first): Shows the exact {feature_type} product to install
+2. TARGET IMAGE (second): Customer's home photo
+
+TASK: Install the {feature_type} from the reference image onto the appropriate locations in the target image.
+
+PRODUCT DETAILS: {style} windows with {frame_color} frames
+
+REQUIREMENTS:
+- Match the exact appearance, color ({frame_color}), and style from the reference
+- Adjust perspective and scale to fit naturally in the target
+- Maintain realistic lighting and shadows
+- Keep the installation looking professional and flush-mounted
+- Replace existing windows in appropriate locations
+
+OUTPUT: A photorealistic composite showing the reference windows installed on the customer's home."""
