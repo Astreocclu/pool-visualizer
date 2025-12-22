@@ -56,6 +56,7 @@ INSTALLED_APPS = [
 
     # Your apps
     'api.apps.ApiConfig',
+    'api.pricing',
 ]
 
 MIDDLEWARE = [
