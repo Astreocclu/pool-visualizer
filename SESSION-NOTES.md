@@ -2,6 +2,57 @@
 
 ---
 
+## Session: 2025-12-22 - Codebase Maintenance
+
+### Context
+- Ran comprehensive maintenance audit on pools-visualizer
+- Branch: master
+- Uncommitted changes from previous work in 3 files
+
+### Work Completed
+
+**1. Maintenance Audit**
+- Scanned for temp files, secrets, dead code, outdated deps
+- Django system check: No issues
+- Secrets scan: Clean (no hardcoded credentials)
+
+**2. Temporary File Cleanup**
+- Removed 23 `__pycache__/` directories (outside venv)
+- Truncated logs: 57,714 → 3,273 lines (kept recent 500 in homescreen.log)
+- Cleaned old thinking logs: 73 → 36 files (removed >7 days old)
+
+**3. Documentation Updates**
+- Updated TODO.md with current state and known issues
+- Updated SESSION-NOTES.md
+
+### Issues Discovered
+1. **PDF generation error:** `'VisualizationRequest' object has no attribute 'options'` - seen in logs
+2. **Token refresh failures:** Intermittent "Token is blacklisted" errors
+3. **Outdated dependencies:** 13 Python packages, 18 npm packages need updates
+
+### Outdated Dependencies Summary
+**Python (notable):**
+- google-genai: 1.52.0 → 1.56.0
+- setuptools: 59.6.0 → 80.9.0 (major)
+- stripe: 14.0.1 → 14.1.0
+
+**npm (notable):**
+- react/react-dom: 19.1.0 → 19.2.3
+- cypress: 14.4.0 → 15.8.1 (major)
+- axios: 1.8.4 → 1.13.2
+
+### Git Status
+- 3 modified files uncommitted (from previous session)
+- Untracked: plan doc, content folder, thinking logs
+
+### Next Steps
+1. Review uncommitted changes and decide on commit
+2. Test water features and site assessment
+3. Fix PDF generation bug
+4. Consider dependency upgrades
+
+---
+
 ## Session: 2025-12-14 - Boss Branding Removal + Pool Site Assessment + Water Features Bug Fix
 
 ### Context

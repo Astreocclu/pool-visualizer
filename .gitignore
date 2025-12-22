@@ -126,3 +126,6 @@ conversation_export_*.md
 
 # Generated PDFs
 *.pdf
+
+# AI thinking logs (debug)
+media/thinking_logs/
