@@ -106,75 +106,93 @@ class ScreenVisualizer:
         """
         Helper method to handle the actual API call plumbing for image editing.
         Uses Thinking Mode for better reasoning on complex edits.
+        Includes comprehensive retry logic for transient failures.
         """
-        try:
-            # Enable Thinking Mode - requires TEXT + IMAGE response modalities
-            config_args = {
-                "response_modalities": ["TEXT", "IMAGE"],
-            }
+        # Enable Thinking Mode - requires TEXT + IMAGE response modalities
+        config_args = {
+            "response_modalities": ["TEXT", "IMAGE"],
+        }
 
-            # Enable Thinking with include_thoughts=True (the original working config)
-            if hasattr(types, 'ThinkingConfig'):
-                config_args['thinking_config'] = types.ThinkingConfig(include_thoughts=True)
+        # Enable Thinking with include_thoughts=True (the original working config)
+        if hasattr(types, 'ThinkingConfig'):
+            config_args['thinking_config'] = types.ThinkingConfig(include_thoughts=True)
 
-            if hasattr(types, 'ImageGenerationConfig'):
-                config_args['image_generation_config'] = types.ImageGenerationConfig(
-                    guidance_scale=70,
-                    person_generation="dont_generate_people"
+        if hasattr(types, 'ImageGenerationConfig'):
+            config_args['image_generation_config'] = types.ImageGenerationConfig(
+                guidance_scale=70,
+                person_generation="dont_generate_people"
+            )
+
+        # Comprehensive retry logic - retries on API errors AND empty responses
+        max_retries = 4
+        last_error = None
+
+        for attempt in range(max_retries):
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=[image, prompt],
+                    config=types.GenerateContentConfig(**config_args)
                 )
 
-            # Retry logic
-            max_retries = 4
-            for attempt in range(max_retries):
-                try:
-                    response = self.client.models.generate_content(
-                        model=self.model_name,
-                        contents=[image, prompt],
-                        config=types.GenerateContentConfig(**config_args)
-                    )
-                    break
-                except Exception as e:
-                    if "429" in str(e) and attempt < max_retries - 1:
-                        wait_time = 10 * (attempt + 1)
-                        logger.warning(f"Rate limited, waiting {wait_time}s (attempt {attempt + 1})")
-                        time.sleep(wait_time)
+                # Log thinking/token usage for monitoring
+                if hasattr(response, 'usage_metadata') and response.usage_metadata:
+                    usage = response.usage_metadata
+                    thinking_tokens = getattr(usage, 'thoughts_token_count', 0) or 0
+                    total_tokens = getattr(usage, 'total_token_count', 0) or 0
+                    logger.info(f"Gemini Usage [{step_name}] - Thinking: {thinking_tokens}, Total: {total_tokens}")
+
+                # Extract and log thinking text, then extract image
+                result_image = None
+                thinking_text = []
+
+                if response.candidates and response.candidates[0].content.parts:
+                    for part in response.candidates[0].content.parts:
+                        # Capture thinking/reasoning text
+                        if hasattr(part, 'text') and part.text:
+                            thinking_text.append(part.text)
+                        # Capture image
+                        if hasattr(part, 'inline_data') and part.inline_data:
+                            from io import BytesIO
+                            result_image = Image.open(BytesIO(part.inline_data.data))
+
+                # Log thinking to file for debugging
+                if thinking_text:
+                    self._log_thinking(step_name, prompt, thinking_text)
+
+                # Success - return the image
+                if result_image:
+                    if attempt > 0:
+                        logger.info(f"Gemini succeeded on attempt {attempt + 1} for {step_name}")
+                    return result_image
+
+                # No image returned - this is a transient failure, retry
+                last_error = "No image data returned from AI service"
+                if attempt < max_retries - 1:
+                    wait_time = 5 * (attempt + 1)
+                    logger.warning(f"No image in response for {step_name}, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(wait_time)
+                    continue
+
+            except Exception as e:
+                last_error = str(e)
+                # Rate limiting or other transient errors
+                if attempt < max_retries - 1:
+                    if "429" in str(e):
+                        wait_time = 15 * (attempt + 1)
+                        logger.warning(f"Rate limited on {step_name}, waiting {wait_time}s (attempt {attempt + 1}/{max_retries})")
                     else:
-                        raise e
+                        wait_time = 5 * (attempt + 1)
+                        logger.warning(f"Gemini error on {step_name}: {e}, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    logger.error(f"Gemini call failed after {max_retries} attempts: {e}")
+                    raise ScreenVisualizerError(f"Gemini call failed: {e}") from e
 
-            # Log thinking/token usage for monitoring
-            if hasattr(response, 'usage_metadata') and response.usage_metadata:
-                usage = response.usage_metadata
-                thinking_tokens = getattr(usage, 'thoughts_token_count', 0) or 0
-                total_tokens = getattr(usage, 'total_token_count', 0) or 0
-                logger.info(f"Gemini Usage [{step_name}] - Thinking: {thinking_tokens}, Total: {total_tokens}")
-
-            # Extract and log thinking text, then extract image
-            result_image = None
-            thinking_text = []
-
-            if response.candidates and response.candidates[0].content.parts:
-                for part in response.candidates[0].content.parts:
-                    # Capture thinking/reasoning text
-                    if hasattr(part, 'text') and part.text:
-                        thinking_text.append(part.text)
-                    # Capture image
-                    if hasattr(part, 'inline_data') and part.inline_data:
-                        from io import BytesIO
-                        result_image = Image.open(BytesIO(part.inline_data.data))
-
-            # Log thinking to file for debugging
-            if thinking_text:
-                self._log_thinking(step_name, prompt, thinking_text)
-
-            if result_image:
-                return result_image
-
-            logger.error("No image data found in response.")
-            raise ScreenVisualizerError("No image data returned from AI service.")
-
-        except Exception as e:
-            logger.error(f"Gemini call failed: {e}")
-            raise ScreenVisualizerError(f"Gemini call failed: {e}") from e
+        # All retries exhausted
+        logger.error(f"No image data after {max_retries} attempts for {step_name}")
+        raise ScreenVisualizerError(f"No image data returned from AI service after {max_retries} attempts. Last error: {last_error}")
 
     def _log_thinking(self, step_name: str, prompt: str, thinking_text: List[str]):
         """Log Gemini's thinking/reasoning to a file for debugging and analysis."""
@@ -211,6 +229,7 @@ class ScreenVisualizer:
     ) -> Image.Image:
         """
         Call Gemini with a reference image for compositing.
+        Includes comprehensive retry logic for transient failures.
 
         Args:
             target_image: The cleaned customer photo
@@ -221,68 +240,86 @@ class ScreenVisualizer:
         Returns:
             PIL Image with reference composited onto target
         """
-        try:
-            config_args = {
-                "response_modalities": ["TEXT", "IMAGE"],
-            }
+        config_args = {
+            "response_modalities": ["TEXT", "IMAGE"],
+        }
 
-            if hasattr(types, 'ThinkingConfig'):
-                config_args['thinking_config'] = types.ThinkingConfig(include_thoughts=True)
+        if hasattr(types, 'ThinkingConfig'):
+            config_args['thinking_config'] = types.ThinkingConfig(include_thoughts=True)
 
-            if hasattr(types, 'ImageGenerationConfig'):
-                config_args['image_generation_config'] = types.ImageGenerationConfig(
-                    guidance_scale=70,
-                    person_generation="dont_generate_people"
+        if hasattr(types, 'ImageGenerationConfig'):
+            config_args['image_generation_config'] = types.ImageGenerationConfig(
+                guidance_scale=70,
+                person_generation="dont_generate_people"
+            )
+
+        # Comprehensive retry logic - retries on API errors AND empty responses
+        max_retries = 4
+        last_error = None
+
+        for attempt in range(max_retries):
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=[reference_image, target_image, prompt],  # Reference first
+                    config=types.GenerateContentConfig(**config_args)
                 )
 
-            # Retry logic
-            max_retries = 4
-            for attempt in range(max_retries):
-                try:
-                    response = self.client.models.generate_content(
-                        model=self.model_name,
-                        contents=[reference_image, target_image, prompt],  # Reference first
-                        config=types.GenerateContentConfig(**config_args)
-                    )
-                    break
-                except Exception as e:
-                    if "429" in str(e) and attempt < max_retries - 1:
-                        wait_time = 10 * (attempt + 1)
-                        logger.warning(f"Rate limited, waiting {wait_time}s (attempt {attempt + 1})")
-                        time.sleep(wait_time)
+                # Log thinking/token usage
+                if hasattr(response, 'usage_metadata') and response.usage_metadata:
+                    usage = response.usage_metadata
+                    thinking_tokens = getattr(usage, 'thoughts_token_count', 0) or 0
+                    total_tokens = getattr(usage, 'total_token_count', 0) or 0
+                    logger.info(f"Gemini Usage [{step_name}] - Thinking: {thinking_tokens}, Total: {total_tokens}")
+
+                # Extract image from response
+                result_image = None
+                thinking_text = []
+
+                if response.candidates and response.candidates[0].content.parts:
+                    for part in response.candidates[0].content.parts:
+                        if hasattr(part, 'text') and part.text:
+                            thinking_text.append(part.text)
+                        if hasattr(part, 'inline_data') and part.inline_data:
+                            from io import BytesIO
+                            result_image = Image.open(BytesIO(part.inline_data.data))
+
+                if thinking_text:
+                    self._log_thinking(step_name, prompt, thinking_text)
+
+                # Success - return the image
+                if result_image:
+                    if attempt > 0:
+                        logger.info(f"Reference edit succeeded on attempt {attempt + 1} for {step_name}")
+                    return result_image
+
+                # No image returned - this is a transient failure, retry
+                last_error = f"No image in Gemini response for step {step_name}"
+                if attempt < max_retries - 1:
+                    wait_time = 5 * (attempt + 1)
+                    logger.warning(f"No image in reference response for {step_name}, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(wait_time)
+                    continue
+
+            except Exception as e:
+                last_error = str(e)
+                # Rate limiting or other transient errors
+                if attempt < max_retries - 1:
+                    if "429" in str(e):
+                        wait_time = 15 * (attempt + 1)
+                        logger.warning(f"Rate limited on {step_name}, waiting {wait_time}s (attempt {attempt + 1}/{max_retries})")
                     else:
-                        raise e
+                        wait_time = 5 * (attempt + 1)
+                        logger.warning(f"Reference edit error on {step_name}: {e}, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    logger.error(f"Reference edit failed after {max_retries} attempts: {e}")
+                    raise ScreenVisualizerError(f"Reference edit failed: {e}") from e
 
-            # Log thinking/token usage
-            if hasattr(response, 'usage_metadata') and response.usage_metadata:
-                usage = response.usage_metadata
-                thinking_tokens = getattr(usage, 'thoughts_token_count', 0) or 0
-                total_tokens = getattr(usage, 'total_token_count', 0) or 0
-                logger.info(f"Gemini Usage [{step_name}] - Thinking: {thinking_tokens}, Total: {total_tokens}")
-
-            # Extract image from response
-            result_image = None
-            thinking_text = []
-
-            if response.candidates and response.candidates[0].content.parts:
-                for part in response.candidates[0].content.parts:
-                    if hasattr(part, 'text') and part.text:
-                        thinking_text.append(part.text)
-                    if hasattr(part, 'inline_data') and part.inline_data:
-                        from io import BytesIO
-                        result_image = Image.open(BytesIO(part.inline_data.data))
-
-            if thinking_text:
-                self._log_thinking(step_name, prompt, thinking_text)
-
-            if result_image is None:
-                raise ScreenVisualizerError(f"No image in Gemini response for step {step_name}")
-
-            return result_image
-
-        except Exception as e:
-            logger.error(f"Reference edit failed for step {step_name}: {e}")
-            raise ScreenVisualizerError(f"Reference edit failed: {e}") from e
+        # All retries exhausted
+        logger.error(f"Reference edit failed after {max_retries} attempts for {step_name}")
+        raise ScreenVisualizerError(f"Reference edit failed after {max_retries} attempts. Last error: {last_error}")
 
     def _call_gemini_json(self, contents: List[Any], prompt: str) -> dict:
         """
