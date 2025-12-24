@@ -26,13 +26,14 @@ class TenantRegistryTest(TestCase):
         config = get_tenant_config()
         self.assertEqual(config.tenant_id, 'pools')
 
-    def test_pool_sizes_not_empty(self):
-        """Pool sizes should be populated."""
+    def test_pool_sizes_in_schema(self):
+        """Pool sizes should be in schema."""
         config = get_tenant_config()
-        sizes = config.get_pool_sizes()
-        self.assertGreater(len(sizes), 0)
+        schema = config.get_schema()
+        self.assertIn('pool_sizes', schema)
+        self.assertGreater(len(schema['pool_sizes']), 0)
         # Check that classic size exists
-        size_ids = [s['id'] for s in sizes]
+        size_ids = [s['id'] for s in schema['pool_sizes']]
         self.assertIn('classic', size_ids)
 
     def test_prompts_module_has_required_functions(self):

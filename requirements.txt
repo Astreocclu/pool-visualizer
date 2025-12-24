@@ -19,3 +19,4 @@ google-genai>=0.3.0 # Google GenAI SDK
 reportlab>=4.0.0
 stripe>=7.0.0
 requests>=2.31.0
+python-dotenv>=1.0.0 # Environment variable loading

@@ -14,12 +14,14 @@ class TenantConfigAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
     
     def test_config_contains_required_keys(self):
-        """Config response should contain all required keys."""
+        """Config response should contain all required keys for pools tenant."""
         response = self.client.get('/api/config/')
         data = response.json()
-        
-        self.assertIn('tenant_id', data)
+
+        # Pools tenant returns these keys
+        self.assertIn('name', data)
         self.assertIn('display_name', data)
-        self.assertIn('choices', data)
-        self.assertIn('mesh', data['choices'])
-        self.assertIn('frame_color', data['choices'])
+        self.assertIn('pool_sizes', data)
+        self.assertIn('pool_shapes', data)
+        self.assertIn('interior_finishes', data)
+        self.assertIn('deck_materials', data)
