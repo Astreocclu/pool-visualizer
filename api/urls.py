@@ -4,6 +4,7 @@ from . import views
 from .auth_views import (
     CustomTokenObtainPairView,
     DevLoginView,
+    GuestSessionView,
     CustomTokenRefreshView,
     register_user,
     logout_user,
@@ -30,6 +31,7 @@ router.register(r'leads', views.LeadViewSet, basename='lead')
 urlpatterns = [
     # Authentication endpoints
     path('auth/login/', DevLoginView.as_view(), name='token_obtain_pair'),
+    path('auth/guest/', GuestSessionView.as_view(), name='guest_session'),
     path('auth/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('auth/register/', register_user, name='register'),
     path('auth/logout/', logout_user, name='logout'),

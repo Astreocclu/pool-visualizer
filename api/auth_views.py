@@ -1,4 +1,5 @@
 import logging
+import uuid
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django_ratelimit.decorators import ratelimit
@@ -129,6 +130,57 @@ class DevLoginView(APIView):
                 {'detail': 'Login failed'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class GuestSessionView(APIView):
+    """Create anonymous guest session for beta testing. No login required."""
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            # Generate unique guest username
+            guest_id = str(uuid.uuid4())[:8]
+            username = f"guest_{guest_id}"
+
+            # Create guest user (no password needed - can't login traditionally)
+            user = User.objects.create_user(
+                username=username,
+                email=f"{username}@guest.trusthome.local",
+                password=None,  # No password - guest only
+                first_name="Guest",
+                last_name="User"
+            )
+
+            # Mark as guest in profile
+            profile = UserProfile.objects.create(user=user)
+
+            # Generate tokens
+            refresh = RefreshToken.for_user(user)
+            access_token = refresh.access_token
+
+            # Add custom claims
+            access_token['username'] = user.username
+            access_token['email'] = user.email
+            access_token['is_staff'] = False
+            access_token['is_guest'] = True
+
+            logger.info(f"Created guest session: {username}")
+
+            return Response({
+                'refresh': str(refresh),
+                'access': str(access_token),
+                'user': UserSerializer(user).data,
+                'is_guest': True
+            })
+
+        except Exception as e:
+            logger.error(f"Guest session creation failed: {str(e)}")
+            return Response(
+                {'detail': 'Failed to create guest session'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
 class CustomTokenRefreshView(TokenRefreshView):
     """Custom JWT token refresh view with logging."""
 

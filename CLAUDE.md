@@ -1,5 +1,9 @@
 # CLAUDE.md - Project Rules for Claude Code
 
+> **Server Info:** User connects from host PC to server `testhome` (192.168.1.254) as user `astre`
+
+---
+
 ## Project Overview
 **testhome-visualizer** - Multi-tenant AI visualization app for home improvement products.
 
@@ -7,6 +11,7 @@
 |---------|------|
 | Backend (Django) | 8000 |
 | Frontend (React) | 3000 |
+| Database | PostgreSQL (contractors_dev) |
 
 ### Active Tenants
 - **pools** - Pool enclosure visualizations (default)
