@@ -95,21 +95,17 @@ WSGI_APPLICATION = 'pools_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.environ.get('DB_NAME', 'contractors_dev'),
+        'USER': os.environ.get('DB_USER', 'contractors_user'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'localdev123'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
-# TODO: Switch to PostgreSQL when installed:
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.environ.get('DB_NAME', 'testhome_visualizer'),
-#         'USER': os.environ.get('DB_USER', 'contractors_user'),
-#         'PASSWORD': os.environ.get('DB_PASSWORD', 'localdev123'),
-#         'HOST': os.environ.get('DB_HOST', 'localhost'),
-#         'PORT': os.environ.get('DB_PORT', '5432'),
-#     }
-# }
+
+# Feature flags
+FEATURE_CONTRACTOR_LINKING = os.environ.get('FEATURE_CONTRACTOR_LINKING', 'false').lower() == 'true'
 
 
 # Password validation
