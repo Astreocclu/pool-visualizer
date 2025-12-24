@@ -344,7 +344,7 @@ class VisualizationRequest(models.Model):
         help_text="Processing progress percentage (0-100)"
     )
     status_message = models.CharField(
-        max_length=200,
+        max_length=500,
         blank=True,
         help_text="Current processing status message"
     )
@@ -449,7 +449,9 @@ class VisualizationRequest(models.Model):
         self.progress_percentage = 0
         if error_message:
             self.error_message = error_message
-            self.status_message = f"Failed: {error_message}"
+            # Truncate status_message to fit in database field (max 500 chars)
+            msg = f"Failed: {error_message}"
+            self.status_message = msg[:497] + "..." if len(msg) > 500 else msg
         else:
             self.status_message = "Processing failed"
         self.save()
