@@ -5,7 +5,7 @@ django-filter>=23.0 # For API filtering
 djangorestframework-simplejwt>=5.5.0 # For JWT authentication
 django-ratelimit>=4.1.0 # For rate limiting
 Pillow>=10.0.0 # For image processing
-psycopg2-binary # PostgreSQL adapter
+psycopg2-binary==2.9.9 # PostgreSQL adapter
 gunicorn>=21.0.0 # WSGI server for production
 gevent>=23.0.0 # Async worker for gunicorn
 redis>=5.0.0 # Redis client
