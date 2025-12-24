@@ -91,10 +91,7 @@ class GeneratedImageSerializer(serializers.ModelSerializer):
 class VisualizationRequestListSerializer(serializers.ModelSerializer):
     """Optimized serializer for listing requests with minimal data."""
 
-    screen_type_display = serializers.CharField(
-        source='get_screen_type_display',
-        read_only=True
-    )
+    screen_type_display = serializers.SerializerMethodField()
     original_image_url = serializers.ImageField(source='original_image', read_only=True)
     result_count = serializers.SerializerMethodField()
     processing_duration = serializers.SerializerMethodField()
@@ -133,12 +130,23 @@ class VisualizationRequestListSerializer(serializers.ModelSerializer):
             return url
         return None
 
+    def get_screen_type_display(self, obj):
+        """Get tenant-aware display name for visualization type."""
+        tenant_display_names = {
+            'pools': 'Pool Visualization',
+            'screens': 'Security Screen Visualization',
+            'windows': 'Window Visualization',
+            'roofs': 'Roofing Visualization',
+        }
+        tenant_id = getattr(obj, 'tenant_id', None) or 'pools'
+        return tenant_display_names.get(tenant_id, 'Visualization')
+
 
 class VisualizationRequestDetailSerializer(serializers.ModelSerializer):
     """Comprehensive serializer for creating and viewing request details."""
 
     # Read-only fields for response
-    screen_type_display = serializers.CharField(source='get_screen_type_display', read_only=True)
+    screen_type_display = serializers.SerializerMethodField()
     results = GeneratedImageSerializer(many=True, read_only=True)
     original_image_url = serializers.ImageField(source='original_image', read_only=True)
     clean_image_url = serializers.ImageField(source='clean_image', read_only=True)
@@ -186,6 +194,17 @@ class VisualizationRequestDetailSerializer(serializers.ModelSerializer):
         if duration:
             return duration.total_seconds()
         return None
+
+    def get_screen_type_display(self, obj):
+        """Get tenant-aware display name for visualization type."""
+        tenant_display_names = {
+            'pools': 'Pool Visualization',
+            'screens': 'Security Screen Visualization',
+            'windows': 'Window Visualization',
+            'roofs': 'Roofing Visualization',
+        }
+        tenant_id = getattr(obj, 'tenant_id', None) or 'pools'
+        return tenant_display_names.get(tenant_id, 'Visualization')
 
     def validate_original_image(self, value):
         """Validate uploaded image file."""
