@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Camera, Sun, TreeDeciduous } from 'lucide-react';
 import ImageUploader from '../Upload/ImageUploader';
 
 const Step4Upload = ({ formData, setFormData, nextStep, prevStep }) => {
@@ -10,14 +10,26 @@ const Step4Upload = ({ formData, setFormData, nextStep, prevStep }) => {
     return (
         <div className="wizard-step fade-in">
             <div className="step-header">
-                <h2>Upload Your Photo</h2>
-                <p className="step-subtitle">Take a photo of your door or window</p>
+                <h2>Upload Your Backyard Photo</h2>
+                <p className="step-subtitle">We'll visualize your new pool in this space</p>
+            </div>
+
+            {/* Photo Tips */}
+            <div className="photo-tips">
+                <h4>For Best Results:</h4>
+                <ul className="tips-list">
+                    <li><Sun size={16} /> Take photo during daylight hours</li>
+                    <li><Camera size={16} /> Stand back to capture the full yard</li>
+                    <li><TreeDeciduous size={16} /> Include the area where the pool will go</li>
+                </ul>
             </div>
 
             <div className="upload-container">
                 <ImageUploader
                     onImageSelect={handleImageSelect}
                     value={formData.image}
+                    placeholderText="Upload a photo of your backyard"
+                    hintText="Best: Wide shot showing full yard, taken in daylight"
                 />
             </div>
 

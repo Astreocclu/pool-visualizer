@@ -9,7 +9,9 @@ const ImageUploader = ({
   acceptedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
   disabled = false,
   className = '',
-  value // undefined means uncontrolled, null/file means controlled
+  value, // undefined means uncontrolled, null/file means controlled
+  placeholderText = 'Drag and drop an image here',  // NEW
+  hintText = null  // NEW
 }) => {
   const [internalFile, setInternalFile] = useState(null);
 
@@ -192,7 +194,7 @@ const ImageUploader = ({
             <div className="upload-icon">📁</div>
             <div className="upload-text">
               <p className="upload-primary-text">
-                {isDragOver ? 'Drop image here' : 'Drag and drop an image here'}
+                {isDragOver ? 'Drop image here' : placeholderText}
               </p>
               <p className="upload-secondary-text">or</p>
               <Button
@@ -204,6 +206,11 @@ const ImageUploader = ({
                 Browse Files
               </Button>
             </div>
+            {hintText && (
+              <div className="upload-hint">
+                <p>{hintText}</p>
+              </div>
+            )}
             <div className="upload-constraints">
               <p>Max size: {formatFileSize(maxSize)}</p>
               <p>Supported: {acceptedTypes.map(type => type.split('/')[1].toUpperCase()).join(', ')}</p>
@@ -250,7 +257,9 @@ ImageUploader.propTypes = {
   maxSize: PropTypes.number,
   acceptedTypes: PropTypes.arrayOf(PropTypes.string),
   disabled: PropTypes.bool,
-  className: PropTypes.string
+  className: PropTypes.string,
+  placeholderText: PropTypes.string,  // NEW
+  hintText: PropTypes.string  // NEW
 };
 
 export default React.memo(ImageUploader);
