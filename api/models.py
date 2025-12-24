@@ -360,6 +360,14 @@ class VisualizationRequest(models.Model):
         help_text="Calculated price breakdown from pricing engine"
     )
 
+    # Optional contractor linking (feature-flagged)
+    contractor_id = models.IntegerField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text="ID of matched contractor from contractors_contractor table (if FEATURE_CONTRACTOR_LINKING enabled)"
+    )
+
     objects = VisualizationRequestManager()
 
     class Meta:
