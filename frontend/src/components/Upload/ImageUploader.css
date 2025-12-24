@@ -273,4 +273,9 @@
   .tips-list li {
     font-size: 0.8rem;
   }
+
+  /* Touch targets - minimum 44px for iOS accessibility */
+  .upload-area {
+    min-height: 180px;
+  }
 }
