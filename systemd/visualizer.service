@@ -1,0 +1,23 @@
+[Unit]
+Description=TrustHome Visualizer (Django + Gunicorn)
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=notify
+User=astre
+Group=astre
+WorkingDirectory=/home/astre/command-center/testhome/testhome-visualizer
+Environment="PATH=/home/astre/command-center/testhome/testhome-visualizer/venv/bin"
+EnvironmentFile=/home/astre/command-center/testhome/testhome-visualizer/.env
+ExecStart=/home/astre/command-center/testhome/testhome-visualizer/venv/bin/gunicorn \
+    --config gunicorn.conf.py \
+    pools_project.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=5
+KillMode=mixed
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

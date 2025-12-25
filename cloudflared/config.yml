@@ -1,0 +1,42 @@
+# Cloudflare Tunnel Configuration
+#
+# SETUP REQUIRED:
+# 1. Install cloudflared:
+#    curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+#    sudo dpkg -i cloudflared.deb
+#    rm cloudflared.deb
+#
+# 2. Authenticate:
+#    cloudflared tunnel login
+#
+# 3. Create tunnel:
+#    cloudflared tunnel create visualizer
+#
+# 4. Replace TUNNEL_ID below with the actual tunnel ID from step 3
+#
+# 5. Update credentials file path with actual TUNNEL_ID
+#
+# 6. Configure DNS:
+#    cloudflared tunnel route dns visualizer trustedhearthandhome.com
+#    cloudflared tunnel route dns visualizer www.trustedhearthandhome.com
+#
+# 7. Test manually:
+#    cloudflared tunnel --config /home/astre/command-center/testhome/testhome-visualizer/cloudflared/config.yml run
+#
+# 8. Install as service:
+#    sudo cloudflared service install --config /home/astre/command-center/testhome/testhome-visualizer/cloudflared/config.yml
+#    sudo systemctl enable cloudflared
+#    sudo systemctl start cloudflared
+
+tunnel: TUNNEL_ID
+credentials-file: /home/astre/.cloudflared/TUNNEL_ID.json
+
+ingress:
+  # Main domain routes to Django
+  - hostname: trustedhearthandhome.com
+    service: http://localhost:8000
+  - hostname: www.trustedhearthandhome.com
+    service: http://localhost:8000
+
+  # Catch-all (required)
+  - service: http_status:404

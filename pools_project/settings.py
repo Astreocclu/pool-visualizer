@@ -28,12 +28,12 @@ FRONTEND_DIR = BASE_DIR / 'frontend'
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!2tpl!3bmpd+c1^ib69u$m8cyul1_0+6#2&32o$ldi4m1grdnj'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-CHANGE-ME-IN-PRODUCTION')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -69,6 +70,26 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Security settings for production
+if not DEBUG:
+    # HTTPS enforcement
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    # HSTS (tell browsers to always use HTTPS)
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+    # Cookie security
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
+    # Additional security headers
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'
 
 ROOT_URLCONF = 'pools_project.urls'
 
@@ -150,6 +171,9 @@ STATICFILES_DIRS = [
     os.path.join(FRONTEND_DIR, 'build', 'static'),
 ]
 
+# WhiteNoise configuration for production static files
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Media files (User uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -178,16 +202,25 @@ REST_FRAMEWORK = {
 }
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # React development server
-    'http://127.0.0.1:3000',
-    'http://localhost:3005',  # Dec 2 stable test
-    'http://127.0.0.1:3005',
-    'http://localhost:3006',  # Pools visualizer
-    'http://127.0.0.1:3006',
-]
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in os.environ.get(
+    'CORS_ORIGINS',
+    'http://localhost:3000,http://127.0.0.1:3000'
+).split(',')]
+
+# In production, also add the main domain
+if not DEBUG:
+    CORS_ALLOWED_ORIGINS.extend([
+        'https://trustedhearthandhome.com',
+        'https://www.trustedhearthandhome.com',
+    ])
 
 CORS_ALLOW_CREDENTIALS = True
+
+# CSRF trusted origins for production
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.environ.get(
+    'CSRF_TRUSTED',
+    'http://localhost:3000'
+).split(',')]
 
 # JWT Settings
 from datetime import timedelta

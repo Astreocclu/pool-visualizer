@@ -132,6 +132,7 @@ class DevLoginView(APIView):
             )
 
 
+@method_decorator(ratelimit(key='ip', rate='10/h', method='POST', block=True), name='post')
 class GuestSessionView(APIView):
     """Create anonymous guest session for beta testing. No login required."""
     permission_classes = [permissions.AllowAny]
@@ -173,6 +174,12 @@ class GuestSessionView(APIView):
                 'is_guest': True
             })
 
+        except Ratelimited:
+            logger.warning(f"Guest session rate limit exceeded for IP: {request.META.get('REMOTE_ADDR')}")
+            return Response(
+                {'detail': 'Too many guest session requests. Please try again later.'},
+                status=status.HTTP_429_TOO_MANY_REQUESTS
+            )
         except Exception as e:
             logger.error(f"Guest session creation failed: {str(e)}")
             return Response(
