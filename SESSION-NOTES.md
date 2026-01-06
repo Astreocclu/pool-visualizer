@@ -2,6 +2,64 @@
 
 ---
 
+## Session: 2026-01-06
+
+### Context
+- Branch: master (up to date with origin)
+- Starting fresh session after Dec 24 maintenance work
+
+### Git Status
+- 30 modified staticfiles (Django admin assets)
+- Untracked: test house/backyard images, new admin icons
+- No staged changes
+
+### Where We Left Off (Dec 24)
+- Ran comprehensive maintenance audit
+- Fixed 7 test failures (all 11 tests now passing)
+- Cleaned 26 `__pycache__` directories, 12 stale logs
+- Updated dependencies (boto3/botocore, npm patches)
+
+### Outstanding Tasks (from TODO.md)
+- [ ] Test water features (fire bowls) in generation
+- [ ] Test pool site assessment on backyard images
+- [ ] Investigate token refresh issue (expired tokens in logs)
+- [ ] Consider Cypress 15.x upgrade (breaking changes)
+
+### Known Issues
+- Token refresh intermittently failing (Dec 22 logs)
+- npm vulnerabilities in react-scripts deps (won't fix without breaking change)
+
+### Maintenance Audit (Jan 6)
+**Cleanup Performed:**
+- Removed 28 `__pycache__` directories
+- Trimmed pools.log from 93,247 lines to 500 lines
+- 220 old thinking logs (>7 days) already cleaned
+
+**Health Checks:**
+- Django system check: PASS (4 tenants registered: pools, windows, roofs, screens)
+- Tests: 11 found, DB permissions prevent running (needs test DB access)
+- Secrets scan: CLEAN (no hardcoded credentials)
+- .env properly gitignored
+
+**Dependency Status:**
+| Type | Outdated | Notable |
+|------|----------|---------|
+| Python | 12 | gunicorn 21→23, pillow 12→12.1, whitenoise 6.6→6.11 |
+| npm | 5 | cypress 14.5→15.8 (breaking), lucide-react, web-vitals |
+
+**npm Vulnerabilities:** 11 (3 moderate, 8 high) - all in react-scripts deps
+
+**Log Errors (Dec 24):**
+- Gemini API quota exhausted (429 RESOURCE_EXHAUSTED)
+- Multiple pipeline failures due to quota
+
+**Storage:**
+- Media folder: 1.1GB (gitignored, acceptable)
+- Pipeline steps: 137MB (741 files)
+- Git folder: 250MB
+
+---
+
 ## Session: 2025-12-24 - Maintenance Audit & Test Fixes
 
 ### Context

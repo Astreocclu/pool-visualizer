@@ -47,7 +47,7 @@ class GeminiProvider(AIServiceProvider):
         return {
             "name": "Google Gemini",
             "version": "1.0.0",
-            "models": ["gemini-3-pro-image-preview", "gemini-2.0-flash-exp"]
+            "models": ["gemini-3-pro-image-preview", "gemini-3-flash-preview"]
         }
 
 class GeminiImageGenerationService(AIImageGenerationService):
