@@ -29,6 +29,9 @@ db.sqlite3-journal
 media/originals/
 media/generated/
 media/pipeline_steps/
+media/pdfs/
+media/test_*/
+staticfiles/
 
 # Environment variables
 .env
