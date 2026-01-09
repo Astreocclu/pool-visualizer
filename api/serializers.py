@@ -78,13 +78,9 @@ class GeneratedImageSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
     def get_generated_image_url(self, obj):
-        """Get absolute URL for the generated image."""
+        """Get URL for the generated image (relative for proxy compatibility)."""
         if obj.generated_image:
-            request = self.context.get('request')
-            url = obj.generated_image.url
-            if request:
-                return request.build_absolute_uri(url)
-            return url
+            return obj.generated_image.url
         return None
 
 
@@ -92,7 +88,7 @@ class VisualizationRequestListSerializer(serializers.ModelSerializer):
     """Optimized serializer for listing requests with minimal data."""
 
     screen_type_display = serializers.SerializerMethodField()
-    original_image_url = serializers.ImageField(source='original_image', read_only=True)
+    original_image_url = serializers.SerializerMethodField()
     result_count = serializers.SerializerMethodField()
     processing_duration = serializers.SerializerMethodField()
     latest_result_url = serializers.SerializerMethodField()
@@ -108,6 +104,12 @@ class VisualizationRequestListSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = fields
 
+    def get_original_image_url(self, obj):
+        """Get relative URL for the original image (proxy-compatible)."""
+        if obj.original_image:
+            return obj.original_image.url
+        return None
+
     def get_result_count(self, obj):
         """Get number of generated results."""
         return obj.get_result_count()
@@ -120,14 +122,10 @@ class VisualizationRequestListSerializer(serializers.ModelSerializer):
         return None
 
     def get_latest_result_url(self, obj):
-        """Get absolute URL of the latest generated image."""
+        """Get URL of the latest generated image (relative for proxy compatibility)."""
         latest_result = obj.results.first()
         if latest_result and latest_result.generated_image:
-            request = self.context.get('request')
-            url = latest_result.generated_image.url
-            if request:
-                return request.build_absolute_uri(url)
-            return url
+            return latest_result.generated_image.url
         return None
 
     def get_screen_type_display(self, obj):
@@ -148,8 +146,8 @@ class VisualizationRequestDetailSerializer(serializers.ModelSerializer):
     # Read-only fields for response
     screen_type_display = serializers.SerializerMethodField()
     results = GeneratedImageSerializer(many=True, read_only=True)
-    original_image_url = serializers.ImageField(source='original_image', read_only=True)
-    clean_image_url = serializers.ImageField(source='clean_image', read_only=True)
+    original_image_url = serializers.SerializerMethodField()
+    clean_image_url = serializers.SerializerMethodField()
     user = UserSerializer(read_only=True)
     processing_duration = serializers.SerializerMethodField()
 
@@ -193,6 +191,18 @@ class VisualizationRequestDetailSerializer(serializers.ModelSerializer):
         duration = obj.processing_duration
         if duration:
             return duration.total_seconds()
+        return None
+
+    def get_original_image_url(self, obj):
+        """Get relative URL for the original image (proxy-compatible)."""
+        if obj.original_image:
+            return obj.original_image.url
+        return None
+
+    def get_clean_image_url(self, obj):
+        """Get relative URL for the cleaned image (proxy-compatible)."""
+        if obj.clean_image:
+            return obj.clean_image.url
         return None
 
     def get_screen_type_display(self, obj):

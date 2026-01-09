@@ -33,7 +33,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-CHANGE-ME-IN-PRODUCTI
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,trustedhearthandhome.com,192.168.1.254').split(',')
+
+# Allow iframe embedding from same origin (for Website embedding visualizer)
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 
 # Application definition
@@ -89,7 +92,6 @@ if not DEBUG:
     # Additional security headers
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
-    X_FRAME_OPTIONS = 'DENY'
 
 ROOT_URLCONF = 'pools_project.urls'
 
@@ -221,6 +223,12 @@ CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.environ.get(
     'CSRF_TRUSTED',
     'http://localhost:3000'
 ).split(',')]
+
+if not DEBUG:
+    CSRF_TRUSTED_ORIGINS.extend([
+        'https://trustedhearthandhome.com',
+        'https://www.trustedhearthandhome.com',
+    ])
 
 # JWT Settings
 from datetime import timedelta

@@ -38,13 +38,17 @@ const ResultDetailPage = () => {
       setError(null);
       pollFailCountRef.current = 0; // Reset on success
 
+      // Successfully fetched - can stop showing loading
+      if (!isRegenerating) {
+        setIsLoading(false);
+      }
+
       // Load tenant-specific content
       if (data.tenant_id) {
         setContent(getTenantContent(data.tenant_id));
       }
 
       if (data.status === 'complete' || data.status === 'failed') {
-        setIsLoading(false);
         setIsRegenerating(false);
 
         // Fetch audit report if complete
@@ -78,10 +82,7 @@ const ResultDetailPage = () => {
         setIsLoading(false);
         return true; // Stop polling on persistent errors
       }
-    } finally {
-      if (!isRegenerating) {
-        setIsLoading(false);
-      }
+      // Don't set isLoading=false on transient errors - keep skeleton visible while polling retries
     }
     return false; // Continue polling
   }, [id, isRegenerating, auditReport]);
@@ -147,9 +148,27 @@ const ResultDetailPage = () => {
     );
   }
 
-  // Guard against null request
+  // Guard against null request - show skeleton as fallback (should not normally reach here)
   if (!request) {
-    return null;
+    return (
+      <div className="result-detail-page">
+        <div className="result-header">
+          <div>
+            <Skeleton variant="text" width={200} height={32} style={{ marginBottom: '10px' }} />
+            <Skeleton variant="text" width={150} />
+          </div>
+          <Skeleton variant="rectangular" width={100} height={30} style={{ borderRadius: '15px' }} />
+        </div>
+        <div className="comparison-slider-container" style={{ backgroundColor: '#f0f0f0', border: 'none' }}>
+          <Skeleton variant="rectangular" width="100%" height="100%" animation="wave" />
+        </div>
+        <div className="action-bar">
+          <Skeleton variant="rectangular" width={120} height={40} style={{ borderRadius: '4px' }} />
+          <Skeleton variant="rectangular" width={120} height={40} style={{ borderRadius: '4px' }} />
+          <Skeleton variant="rectangular" width={120} height={40} style={{ borderRadius: '4px' }} />
+        </div>
+      </div>
+    );
   }
 
   const resultImage = request.results && request.results.length > 0 ? request.results[0] : null;

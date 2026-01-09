@@ -117,3 +117,37 @@ npm run test     # run tests
 - Reference Image System allows contractors to upload product photos for AI compositing
 - AI pipeline: Cleanup → Feature Insertion → Quality Check
 - Uses Google Gemini Nano Banana Pro for image editing
+
+---
+
+## Troubleshooting
+
+### White Screen During Image Generation (Fixed 2026-01-08)
+
+**Symptoms:** After submitting the visualization form, users see a blank white screen instead of the ProcessingScreen animation. Affects all browsers, multiple users.
+
+**Root Cause:** In `frontend/src/pages/ResultDetailPage.js`, the `fetchRequestDetails` function had a `finally` block that ALWAYS set `isLoading(false)` regardless of whether the fetch succeeded or failed. This caused a race condition:
+
+1. User submits form, navigates to `/results/{id}`
+2. `ResultDetailPage` mounts with `isLoading=true`, `request=null`
+3. First render shows skeleton (correct)
+4. If first API fetch fails (network hiccup, etc.):
+   - `request` stays `null`
+   - `error` stays `null` (only set after 3 consecutive failures)
+   - `isLoading` becomes `false` (from finally block)
+5. Second render: `isLoading && !request` = `false`, no error page, `!request` guard returns `null` → **WHITE SCREEN**
+
+**Fix:**
+1. Removed the `finally` block that unconditionally set `isLoading(false)`
+2. Now `setIsLoading(false)` only happens when:
+   - Successfully fetched request data (in try block)
+   - After 3 consecutive failures with error message (in catch block)
+3. Changed the null guard from `return null` to render a skeleton as fallback
+
+**Files Changed:** `frontend/src/pages/ResultDetailPage.js`
+
+**After Fixing:**
+```bash
+cd frontend && npm run build
+sudo systemctl restart testhome-visualizer.service
+```
