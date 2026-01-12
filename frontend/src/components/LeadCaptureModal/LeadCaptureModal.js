@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Download, Loader2, CheckCircle } from 'lucide-react';
 import { createLead } from '../../services/api';
 import './LeadCaptureModal.css';
@@ -24,6 +25,7 @@ const US_STATES = [
 ];
 
 const LeadCaptureModal = ({ isOpen, onClose, visualizationId, isSalesRep = false }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -91,12 +93,19 @@ const LeadCaptureModal = ({ isOpen, onClose, visualizationId, isSalesRep = false
         ...formData
       });
 
+      // Store lead ID for deposit page
+      if (response.id) {
+        localStorage.setItem(`lead_${visualizationId}`, response.id);
+      }
+
       // Trigger PDF download
       if (response.pdf_url) {
         window.open(response.pdf_url, '_blank');
       }
 
       setIsSuccess(true);
+
+      // Navigate to deposit page after brief success message
       setTimeout(() => {
         onClose();
         setIsSuccess(false);
@@ -105,7 +114,8 @@ const LeadCaptureModal = ({ isOpen, onClose, visualizationId, isSalesRep = false
           address_street: '', address_city: '', address_state: '', address_zip: '',
           is_existing_customer: false,
         });
-      }, 2000);
+        navigate(`/deposit/${visualizationId}`);
+      }, 1500);
 
     } catch (err) {
       console.error('Lead submission error:', err);
