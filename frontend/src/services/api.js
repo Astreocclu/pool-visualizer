@@ -445,6 +445,32 @@ const createLead = async (data) => {
   );
 };
 
+// Config functions
+const getConfig = async () => {
+  return handleApiCall(
+    () => api.get('/payments/config/'),
+    'Failed to fetch config'
+  );
+};
+
+// Deposit functions
+const getDepositStatus = async (visualizationId) => {
+  return handleApiCall(
+    () => api.get(`/payments/deposit/${visualizationId}/status/`),
+    'Failed to fetch deposit status'
+  );
+};
+
+const createDepositCheckout = async (leadId, visualizationId) => {
+  return handleApiCall(
+    () => api.post('/payments/deposit/create-checkout/', {
+      lead_id: leadId,
+      visualization_id: visualizationId,
+    }),
+    'Failed to create checkout'
+  );
+};
+
 // Export all functions
 export {
   // Authentication
@@ -498,5 +524,12 @@ export {
   createLead,
 
   // Tenant Config
-  fetchTenantConfig
+  fetchTenantConfig,
+
+  // Config
+  getConfig,
+
+  // Deposit
+  getDepositStatus,
+  createDepositCheckout
 };

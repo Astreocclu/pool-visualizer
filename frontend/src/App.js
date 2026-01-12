@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import './App.css';
+import { ConfigProvider } from './context/ConfigContext';
 import ResultsPage from './pages/ResultsPage';
 import ResultDetailPage from './pages/ResultDetailPage';
 import QuoteSuccessPage from './pages/QuoteSuccessPage';
@@ -142,55 +143,51 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <div style={{ minHeight: '100vh', backgroundColor: 'var(--primary-navy)', padding: '20px' }}>
-        <Routes>
-          <Route path="/login" element={
-            user ? <Navigate to="/" replace /> : <LoginPage onLogin={handleLogin} error={error} loading={loading} />
-          } />
+    <ConfigProvider>
+      <div className="App">
+        <div style={{ minHeight: '100vh', backgroundColor: 'var(--primary-navy)', padding: '20px' }}>
+          <Routes>
+            <Route path="/login" element={
+              user ? <Navigate to="/" replace /> : <LoginPage onLogin={handleLogin} error={error} loading={loading} />
+            } />
 
-          <Route path="/" element={
-            <ProtectedRoute>
-              <DashboardPage user={user} onLogout={handleLogout} />
-            </ProtectedRoute>
-          } />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <DashboardPage user={user} onLogout={handleLogout} />
+              </ProtectedRoute>
+            } />
 
-          {/* Single dynamic upload route for all tenants */}
-          <Route path="/upload/:tenantId" element={
-            <ProtectedRoute>
-              <UploadPage />
-            </ProtectedRoute>
-          } />
+            {/* Single dynamic upload route for all tenants */}
+            <Route path="/upload/:tenantId" element={
+              <ProtectedRoute>
+                <UploadPage />
+              </ProtectedRoute>
+            } />
 
-          {/* Redirect /upload to /upload/pools for backwards compatibility */}
-          <Route path="/upload" element={<Navigate to="/upload/pools" replace />} />
+            {/* Redirect /upload to /upload/pools for backwards compatibility */}
+            <Route path="/upload" element={<Navigate to="/upload/pools" replace />} />
 
-          <Route path="/screentypes" element={
-            <ProtectedRoute>
-              <ScreenTypesPage screenTypes={screenTypes} />
-            </ProtectedRoute>
-          } />
+            <Route path="/screentypes" element={
+              <ProtectedRoute>
+                <ScreenTypesPage screenTypes={screenTypes} />
+              </ProtectedRoute>
+            } />
 
-          <Route path="/results" element={
-            <ProtectedRoute>
-              <ResultsPage />
-            </ProtectedRoute>
-          } />
+            <Route path="/results/:id" element={
+              <ProtectedRoute>
+                <ResultDetailPage />
+              </ProtectedRoute>
+            } />
 
-          <Route path="/results/:id" element={
-            <ProtectedRoute>
-              <ResultDetailPage />
-            </ProtectedRoute>
-          } />
-
-          <Route path="/quote/success" element={
-            <ProtectedRoute>
-              <QuoteSuccessPage />
-            </ProtectedRoute>
-          } />
-        </Routes>
+            <Route path="/quote/success" element={
+              <ProtectedRoute>
+                <QuoteSuccessPage />
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </ConfigProvider>
   );
 }
 
