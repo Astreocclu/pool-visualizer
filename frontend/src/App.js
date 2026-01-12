@@ -9,6 +9,8 @@ import UploadPage from './pages/UploadPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ScreenTypesPage from './pages/ScreenTypesPage';
+import DepositPage from './pages/DepositPage';
+import DepositSuccessPage from './pages/DepositSuccessPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -184,6 +186,10 @@ function App() {
                 <QuoteSuccessPage />
               </ProtectedRoute>
             } />
+
+            {/* Deposit pages - no authentication required for homeowners */}
+            <Route path="/deposit/:id" element={<DepositPage />} />
+            <Route path="/deposit/:id/success" element={<DepositSuccessPage />} />
           </Routes>
         </div>
       </div>
