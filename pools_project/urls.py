@@ -23,6 +23,7 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')), # Include your app's urls
+    path('api/payments/', include('api.payments.urls')),  # Payment endpoints
     # Add Browsable API login/logout views for development
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
