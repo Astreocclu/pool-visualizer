@@ -298,5 +298,17 @@ ACTIVE_TENANT = os.environ.get('ACTIVE_TENANT', 'pools')
 USE_TENANT_REGISTRY = os.environ.get('USE_TENANT_REGISTRY', 'true').lower() == 'true'
 
 
+# =============================================================================
+# STRIPE CONFIGURATION (Feature-flagged)
+# =============================================================================
 
+ENABLE_PAYMENTS = os.environ.get('ENABLE_PAYMENTS', 'false').lower() == 'true'
+STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY', '')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+STRIPE_DEPOSIT_PRICE_ID = os.environ.get('STRIPE_DEPOSIT_PRICE_ID', '')
+STRIPE_SUBSCRIPTION_PRICE_ID = os.environ.get('STRIPE_SUBSCRIPTION_PRICE_ID', '')
 
+# Deposit and subscription amounts (in dollars)
+HOMEOWNER_DEPOSIT_AMOUNT = 500
+CONTRACTOR_SUBSCRIPTION_AMOUNT = 100
