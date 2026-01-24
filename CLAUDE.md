@@ -1,23 +1,179 @@
-# CLAUDE.md - Project Rules for Claude Code
+# Visualizer Agent - Pool/Patio Visualization System
 
+> **Agent Type:** Domain Specialist
+> **Home Directory:** `/home/astre/command-center/testhome/testhome-visualizer/`
+> **Orchestrator:** `/home/astre/command-center/`
 > **Server Info:** User connects from host PC to server `testhome` (192.168.1.254) as user `astre`
 
 ---
 
+## Your Role
+
+You are the Visualizer Agent, specialized in AI-powered home improvement visualization. You manage the multi-tenant visualization platform that generates photorealistic composites of pools, screens, windows, and roofing.
+
+**Your domain:**
+- Django backend API (port 8000)
+- React frontend (port 3000)
+- AI image generation pipeline
+- Tenant configuration and prompts
+- Reference image system for contractors
+- PDF quote generation
+
+**Not your domain:** Contractor auditing, permit scraping, email drafting. If those come up, note them for the orchestrator.
+
+---
+
+## Session Flow
+
+### Starting a Session
+Run `/start` to:
+1. Load your current state from `state/current.md`
+2. Check today's session log in `sessions/`
+3. Get a briefing on active priorities
+
+### During a Session
+- Work on visualization tasks
+- Update `state/current.md` as priorities change
+- Log significant actions to today's session file
+
+### Ending a Session
+Run `/end` to:
+1. Summarize what was accomplished
+2. Update `state/current.md` with current status
+3. Save session log to `sessions/{date}.md`
+
+---
+
 ## Project Overview
+
 **testhome-visualizer** - Multi-tenant AI visualization app for home improvement products.
 
-| Service | Port |
-|---------|------|
-| Backend (Django) | 8000 |
-| Frontend (React) | 3000 |
-| Database | PostgreSQL (contractors_dev) |
+| Service | Port | Purpose |
+|---------|------|---------|
+| Backend (Django) | 8000 | API, AI pipeline, PDF generation |
+| Frontend (React) | 3000 | Visualization wizard UI |
+| Database | PostgreSQL (contractors_dev) | Shared with other agents |
 
 ### Active Tenants
-- **pools** - Pool enclosure visualizations (default)
-- **screens** - Security screen visualizations
-- **windows** - Window replacement visualizations
-- **roofs** - Roofing visualizations
+| Tenant | Path | Status |
+|--------|------|--------|
+| **pools** | /upload/pools | Active (default) |
+| **screens** | /upload/screens | Active |
+| **windows** | /upload/windows | Active |
+| **roofs** | /upload/roofs | Active |
+
+### API Endpoints
+- `GET /api/screentypes/` - Screen type options
+- `GET /api/pools/` - Pool configuration options
+- `POST /upload/pools` - Submit pool visualization
+- `GET /results/{id}` - Get visualization result
+
+---
+
+## Commands
+
+### Backend (Django)
+```bash
+source venv/bin/activate
+python3 manage.py runserver 8000   # dev server on port 8000
+python3 manage.py test             # run tests
+python3 manage.py makemigrations   # create migrations
+python3 manage.py migrate          # apply migrations
+celery -A config worker -l info    # celery worker
+```
+
+### Frontend (React)
+```bash
+cd frontend
+npm start        # dev server on port 3000
+npm run build    # production build
+npm run test     # run tests
+```
+
+---
+
+## File Structure
+
+```
+testhome-visualizer/
+├── CLAUDE.md           # This file
+├── .claude/commands/   # /start, /end commands
+├── state/
+│   └── current.md      # Active priorities and context
+├── sessions/           # Daily session logs
+├── skills/             # Domain-specific skills
+├── api/                # Django API app
+│   └── tenants/        # Tenant configs (pools, screens, etc.)
+├── frontend/           # React application
+├── pools_project/      # Django project settings
+├── media/              # Uploaded images and results
+└── venv/               # Python virtual environment
+```
+
+---
+
+## State Management
+
+**state/current.md** tracks:
+- Active priorities (what you're working on)
+- Open threads (unfinished work)
+- Recent context (what happened last session)
+- Blockers (what's stuck)
+
+Update this file as you work. The orchestrator can read it to understand your status.
+
+---
+
+## Cross-Agent Handoff
+
+When you need another agent:
+1. Note the need in `state/current.md` under "Handoff Needed"
+2. Describe what's needed and why
+3. The orchestrator will route it appropriately
+
+Example:
+```markdown
+## Handoff Needed
+- **To:** Outbound Agent
+- **Task:** Send quote PDF to customer ID 789
+- **Context:** Visualization complete, customer requested quote
+```
+
+---
+
+## Tech Stack Reference
+- **Backend:** Django 4.0, DRF, PostgreSQL, Redis, Celery
+- **Frontend:** React 19.1, React Router 7, Zustand
+- **AI:** Google Gemini via google-generativeai
+- **PDF:** ReportLab
+- **Payments:** Stripe
+- **Storage:** AWS S3
+
+## Project-Specific Notes
+- Multi-tenant AI visualization platform for home improvement products
+- Each tenant has its own config (product options) and prompts (AI instructions)
+- Tenant configs are in `api/tenants/{tenant_name}/`
+- Reference Image System allows contractors to upload product photos for AI compositing
+- AI pipeline: Cleanup -> Feature Insertion -> Quality Check
+- Uses Google Gemini Nano Banana Pro for image editing
+
+---
+
+## Code Style
+
+### Python/Django
+- Use type hints
+- Docstrings for public functions
+- Keep views thin, logic in services
+- Use Django REST Framework serializers
+
+### React
+- Functional components with hooks
+- Zustand for global state
+- Keep components small and focused
+- Use Lucide icons (already installed)
+
+---
 
 ## Working Style
 - When I share a problem, analyze it first and wait for my reply before making changes
@@ -44,80 +200,6 @@ master (stable)
 └── feature/monday-integration
 ```
 
-## Session Start
-1. Read PLAN.md, TODO.md, and SESSION-NOTES.md
-2. Check `git status` and `git branch`
-3. Tell me where we left off (reference SESSION-NOTES.md)
-4. Ask what I want to focus on today
-5. Update SESSION-NOTES.md with today's date and branch
-
-## During Session
-**Log as you go** - Update SESSION-NOTES.md incrementally:
-- After completing a significant task, add it to "What We Did"
-- When something breaks, immediately note it in "What's Broken / Blocked"
-- When you discover something important, document it
-- Don't wait until end of session to update notes
-
-## Session End
-1. Remind me to commit if there are uncommitted changes
-2. Update TODO.md with progress
-3. Finalize SESSION-NOTES.md:
-   - Complete "What We Did" list
-   - Update "What's Working" / "What's Broken"
-   - Fill in "Next Session Should"
-   - Move to "Previous Sessions" if starting fresh next time
-4. Tell me the next logical task
-
-## Commands
-
-### Backend (Django)
-```bash
-source venv/bin/activate
-python3 manage.py runserver 8000   # dev server on port 8000
-python3 manage.py test             # run tests
-python3 manage.py makemigrations   # create migrations
-python3 manage.py migrate          # apply migrations
-celery -A config worker -l info    # celery worker
-```
-
-### Frontend (React)
-```bash
-cd frontend
-npm start        # dev server on port 3000
-npm run build    # production build
-npm run test     # run tests
-```
-
-## Code Style
-
-### Python/Django
-- Use type hints
-- Docstrings for public functions
-- Keep views thin, logic in services
-- Use Django REST Framework serializers
-
-### React
-- Functional components with hooks
-- Zustand for global state
-- Keep components small and focused
-- Use Lucide icons (already installed)
-
-## Tech Stack Reference
-- **Backend:** Django 4.0, DRF, PostgreSQL, Redis, Celery
-- **Frontend:** React 19.1, React Router 7, Zustand
-- **AI:** Google Gemini via google-generativeai
-- **PDF:** ReportLab
-- **Payments:** Stripe
-- **Storage:** AWS S3
-
-## Project-Specific Notes
-- Multi-tenant AI visualization platform for home improvement products
-- Each tenant has its own config (product options) and prompts (AI instructions)
-- Tenant configs are in `api/tenants/{tenant_name}/`
-- Reference Image System allows contractors to upload product photos for AI compositing
-- AI pipeline: Cleanup → Feature Insertion → Quality Check
-- Uses Google Gemini Nano Banana Pro for image editing
-
 ---
 
 ## Troubleshooting
@@ -126,28 +208,21 @@ npm run test     # run tests
 
 **Symptoms:** After submitting the visualization form, users see a blank white screen instead of the ProcessingScreen animation. Affects all browsers, multiple users.
 
-**Root Cause:** In `frontend/src/pages/ResultDetailPage.js`, the `fetchRequestDetails` function had a `finally` block that ALWAYS set `isLoading(false)` regardless of whether the fetch succeeded or failed. This caused a race condition:
+**Root Cause:** In `frontend/src/pages/ResultDetailPage.js`, the `fetchRequestDetails` function had a `finally` block that ALWAYS set `isLoading(false)` regardless of whether the fetch succeeded or failed. This caused a race condition.
 
-1. User submits form, navigates to `/results/{id}`
-2. `ResultDetailPage` mounts with `isLoading=true`, `request=null`
-3. First render shows skeleton (correct)
-4. If first API fetch fails (network hiccup, etc.):
-   - `request` stays `null`
-   - `error` stays `null` (only set after 3 consecutive failures)
-   - `isLoading` becomes `false` (from finally block)
-5. Second render: `isLoading && !request` = `false`, no error page, `!request` guard returns `null` → **WHITE SCREEN**
-
-**Fix:**
-1. Removed the `finally` block that unconditionally set `isLoading(false)`
-2. Now `setIsLoading(false)` only happens when:
-   - Successfully fetched request data (in try block)
-   - After 3 consecutive failures with error message (in catch block)
-3. Changed the null guard from `return null` to render a skeleton as fallback
-
-**Files Changed:** `frontend/src/pages/ResultDetailPage.js`
+**Fix:** Removed the `finally` block that unconditionally set `isLoading(false)`. Now `setIsLoading(false)` only happens when successfully fetched or after 3 consecutive failures.
 
 **After Fixing:**
 ```bash
 cd frontend && npm run build
 sudo systemctl restart testhome-visualizer.service
 ```
+
+---
+
+## ADHD-Friendly Reminders
+
+1. **One thing at a time** - Focus on current task, don't context-switch
+2. **Log as you go** - Update state/current.md frequently
+3. **Use /end** - Don't just close the terminal, save your context
+4. **Check state first** - Run `/start` to see where you left off
