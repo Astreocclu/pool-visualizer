@@ -60,6 +60,11 @@ class CreateDepositCheckoutView(APIView):
                 {'error': 'Lead or visualization not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
+        if lead.visualization_id != visualization.id:
+            return Response(
+                {'error': 'Lead does not match visualization'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         # Check if deposit already exists and is paid
         existing_deposit = HomeownerDeposit.objects.filter(

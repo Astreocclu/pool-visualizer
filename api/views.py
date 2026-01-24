@@ -1,6 +1,7 @@
 import logging
 import time
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.core.cache import cache
@@ -19,6 +20,7 @@ from .serializers import (
     UserProfileSerializer,
     LeadSerializer
 )
+from .utils.pdf_access import verify_pdf_signature
 # from .tasks import process_image_request # Import later if using Celery
 
 logger = logging.getLogger(__name__)
@@ -52,7 +54,7 @@ class VisualizationRequestViewSet(viewsets.ModelViewSet):
     API endpoint for managing visualization requests.
     Supports filtering, searching, pagination, and optimized queries.
     """
-    permission_classes = [permissions.AllowAny]  # Dev mode - no auth required
+    permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['status', 'screen_type']
@@ -60,12 +62,23 @@ class VisualizationRequestViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at', 'updated_at', 'status']
     ordering = ['-created_at']
 
+    def get_permissions(self):
+        """Allow public access to signed PDF links only."""
+        if self.action == 'pdf':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
     def get_queryset(self):
         """
         Return visualization requests with optimized queries.
         Dev mode: returns all requests. Prod: filter by user.
         """
         queryset = VisualizationRequest.objects.all()
+        user = self.request.user
+        if user.is_authenticated and not (user.is_staff or user.is_superuser):
+            queryset = queryset.filter(user=user)
+        elif not user.is_authenticated:
+            queryset = queryset.none()
 
         # Optimize queries based on action
         if self.action == 'list':
@@ -200,11 +213,37 @@ class VisualizationRequestViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def pdf(self, request, pk=None):
         """Generate PDF report."""
-        instance = self.get_object()
+        if request.user.is_authenticated:
+            if request.user.is_staff or request.user.is_superuser:
+                instance = get_object_or_404(VisualizationRequest, pk=pk)
+            else:
+                instance = get_object_or_404(VisualizationRequest, pk=pk, user=request.user)
+        else:
+            instance = get_object_or_404(VisualizationRequest, pk=pk)
+            lead_id = request.query_params.get('lead')
+            signature = request.query_params.get('sig')
+            if not lead_id or not signature:
+                return Response({'detail': 'PDF access denied.'}, status=status.HTTP_403_FORBIDDEN)
+            try:
+                lead_id_int = int(lead_id)
+            except (TypeError, ValueError):
+                return Response({'detail': 'PDF access denied.'}, status=status.HTTP_403_FORBIDDEN)
+            lead = Lead.objects.filter(id=lead_id_int, visualization_id=instance.id).first()
+            if not lead or not verify_pdf_signature(lead_id_int, instance.id, signature):
+                return Response({'detail': 'PDF access denied.'}, status=status.HTTP_403_FORBIDDEN)
         from .utils.pdf_generator import generate_visualization_pdf
         from django.http import FileResponse
         
         try:
+            if instance.generated_pdf:
+                try:
+                    return FileResponse(
+                        instance.generated_pdf.open('rb'),
+                        as_attachment=True,
+                        filename=f"quote_{instance.id}.pdf"
+                    )
+                except Exception:
+                    logger.warning(f"Failed to open stored PDF for request {instance.id}, regenerating.")
             pdf_buffer = generate_visualization_pdf(instance)
             return FileResponse(pdf_buffer, as_attachment=True, filename=f"quote_{instance.id}.pdf")
         except Exception as e:
@@ -464,7 +503,7 @@ class LeadViewSet(viewsets.ModelViewSet):
     """
     queryset = Lead.objects.all()
     serializer_class = LeadSerializer
-    permission_classes = [permissions.AllowAny]  # Allow public access for lead capture
+    permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['post', 'get']  # Only allow create and list
 
     def get_queryset(self):

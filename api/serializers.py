@@ -6,6 +6,7 @@ from PIL import Image
 import io
 from .models import VisualizationRequest, GeneratedImage, UserProfile
 from api.tenants import get_tenant_config
+from .utils.pdf_access import build_pdf_signature
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -345,10 +346,14 @@ class LeadSerializer(serializers.ModelSerializer):
     def validate_visualization_id(self, value):
         """Validate visualization exists."""
         from .models import VisualizationRequest
-        try:
-            VisualizationRequest.objects.get(id=value)
-        except VisualizationRequest.DoesNotExist:
+        request = self.context.get('request')
+        queryset = VisualizationRequest.objects.filter(id=value)
+        if request and request.user.is_authenticated and not request.user.is_staff:
+            queryset = queryset.filter(user=request.user)
+        visualization = queryset.first()
+        if not visualization:
             raise serializers.ValidationError("Visualization not found.")
+        self._visualization = visualization
         return value
 
     def validate_phone(self, value):
@@ -368,19 +373,17 @@ class LeadSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         from .models import VisualizationRequest, Lead
         visualization_id = validated_data.pop('visualization_id')
-        visualization = VisualizationRequest.objects.get(id=visualization_id)
+        visualization = getattr(self, '_visualization', None)
+        if visualization is None:
+            visualization = VisualizationRequest.objects.get(id=visualization_id)
         return Lead.objects.create(visualization=visualization, **validated_data)
 
     def get_pdf_url(self, obj):
         """Return the PDF URL for the visualization."""
         request = self.context.get('request')
-        if obj.visualization.generated_pdf:
-            if request:
-                return request.build_absolute_uri(obj.visualization.generated_pdf.url)
-            return obj.visualization.generated_pdf.url
-        # Fallback to dynamic generation endpoint
+        signature = build_pdf_signature(obj.id, obj.visualization.id)
+        pdf_path = f"/api/visualization/{obj.visualization.id}/pdf/?lead={obj.id}&sig={signature}"
         if request:
-            return request.build_absolute_uri(f'/api/visualization/{obj.visualization.id}/pdf/')
-        return f'/api/visualization/{obj.visualization.id}/pdf/'
-
+            return request.build_absolute_uri(pdf_path)
+        return pdf_path
 

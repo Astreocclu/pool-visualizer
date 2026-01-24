@@ -2,6 +2,7 @@
 import json
 from collections import deque
 from datetime import datetime
+from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -18,6 +19,8 @@ def debug_errors(request):
     POST: Add a new error
     DELETE: Clear all errors
     """
+    if not settings.DEBUG:
+        return JsonResponse({'detail': 'Not Found'}, status=404)
     if request.method == "GET":
         return JsonResponse({
             "count": len(_error_store),

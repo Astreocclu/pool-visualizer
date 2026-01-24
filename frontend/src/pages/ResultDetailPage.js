@@ -114,6 +114,27 @@ const ResultDetailPage = () => {
     }
   };
 
+  const handleSalesRepPdf = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`/api/visualization/${id}/pdf/`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to download PDF.');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank', 'noopener');
+      setTimeout(() => window.URL.revokeObjectURL(url), 5000);
+    } catch (downloadError) {
+      console.error('PDF download failed:', downloadError);
+      window.alert('Failed to download PDF. Please try again.');
+    }
+  };
+
   if (isLoading && !request) {
     return (
       <div className="result-detail-page">
@@ -261,8 +282,8 @@ const ResultDetailPage = () => {
             className="btn-download-report"
             onClick={() => {
               if (isSalesRep) {
-                // Sales reps skip lead capture, go direct to PDF
-                window.open(`/api/visualization/${id}/pdf/`, '_blank');
+                // Sales reps skip lead capture, download with auth
+                handleSalesRepPdf();
               } else {
                 setShowLeadModal(true);
               }
