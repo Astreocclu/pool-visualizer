@@ -2,6 +2,112 @@
 
 ---
 
+## Session: 2026-01-27
+
+### Context
+- Branch: fix/friend-family-hardening (pushed)
+- Pre-existing uncommitted changes from prior sessions remain
+
+### What We Did
+- Added signed PDF access links and owner-scoped visualization/lead access
+- Disabled debug error endpoint when DEBUG is false
+- Validated lead/visualization pairing for deposit checkout
+- Added sales-rep PDF download flow with auth header
+- Committed and pushed: fdf3abc
+
+### Files Changed
+- api/utils/pdf_access.py
+- api/views.py
+- api/serializers.py
+- api/payments/views.py
+- api/views_debug.py
+- frontend/src/pages/ResultDetailPage.js
+
+### Next Session Should
+- Smoke test demo flow: upload → results → lead capture → PDF → deposit
+- Verify sales-rep PDF download flow
+- Decide whether to sign/authorize deposit status and checkout endpoints
+
+---
+
+## Session: 2026-01-19
+
+### Context
+- Branch: master (9 commits ahead of origin)
+- 6 modified files with unstaged changes
+
+### Git Status
+```
+Modified (unstaged):
+- CLAUDE.md
+- README.md
+- SESSION-NOTES.md
+- api/tenants/screens/prompts.py
+- frontend/src/pages/DashboardPage.js
+- frontend/src/pages/ResultDetailPage.js
+```
+
+### Where We Left Off (Jan 6)
+- Ran maintenance audit
+- Cleaned 28 `__pycache__` directories
+- Trimmed pools.log to 500 lines
+- Health checks passed (4 tenants: pools, windows, roofs, screens)
+- Tests found but couldn't run due to DB permissions
+
+### Outstanding Tasks
+- [ ] Test water features (fire bowls) in generation
+- [ ] Test pool site assessment on backyard images
+- [ ] Investigate token refresh issue (expired tokens in logs)
+- [ ] Consider Cypress 15.x upgrade (breaking changes)
+- [ ] Push 9 commits to origin
+
+### Known Issues
+- Token refresh intermittently failing (Dec 22 logs)
+- npm vulnerabilities in react-scripts deps (won't fix without breaking change)
+
+### What We Did
+- Rewrote Cypress tests for pools wizard (replaced old screen-type tests)
+- Created 3 new test files: auth.cy.js, pools-wizard.cy.js, results.cy.js (~90 tests)
+- Added data-testid attributes to 9 React components
+- Downloaded stock backyard images for test fixtures
+- Updated support/commands.js and support/e2e.js
+- Installed Cypress binary (was missing)
+
+### Files Changed
+**New test files:**
+- frontend/cypress/e2e/auth.cy.js
+- frontend/cypress/e2e/pools-wizard.cy.js
+- frontend/cypress/e2e/results.cy.js
+
+**Updated components (added data-testid):**
+- PoolSizeShapeStep.js
+- FinishBuiltInsStep.js
+- DeckStep.js
+- WaterFeaturesStep.js
+- FinishingStep.js
+- Step4Upload.js
+- Step5Review.js
+- ImageUploader.js
+- UploadPage.js
+
+**New fixtures:**
+- test-backyard-1.jpg (142KB)
+- test-backyard-2.jpg (83KB)
+
+### Blocker
+- **Xvfb missing:** Cypress requires Xvfb (X Virtual Framebuffer) to run headless on Linux
+- Run `sudo apt-get install xvfb` then `npx cypress run --headless`
+- Alternatively: Run tests on a machine with GUI or in Docker
+
+### Next Session Should
+- Install Xvfb: `sudo apt-get install xvfb`
+- Run Cypress tests: `cd frontend && npx cypress run --headless`
+- Fix any failing tests
+- Add data-testid to ResultDetailPage for results.cy.js tests
+- Consider committing the test rewrite
+
+---
+
 ## Session: 2026-01-06
 
 ### Context
@@ -247,7 +353,7 @@ ad13741 feat: add pool site assessment fields to AuditReport model
 
 ### Context
 - User wanted to create a standalone pools visualizer forked from the boss-security-visualizer
-- Previous session had forked the repo to `/home/reid/testhome/pools-visualizer/`
+- Previous session had forked the repo to `/home/astre/testhome/pools-visualizer/`
 - This session implemented the full 5-screen wizard and 6-step AI pipeline
 
 ### Work Completed

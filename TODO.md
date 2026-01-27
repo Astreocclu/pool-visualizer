@@ -1,14 +1,16 @@
 # Current TODO
 
 ## Active Branch
-`master`
+`fix/friend-family-hardening`
 
 ## Current Focus
-Pool visualizer maintenance and polish
+Friend/family demo hardening (access control + signed PDFs)
 
 ---
 
 ## This Session
+- [x] Add signed PDF access and owner-scoped visualizations/leads (Jan 27)
+- [ ] Smoke test demo flow (lead capture → PDF → deposit)
 - [x] Comprehensive maintenance audit (Dec 24)
 - [x] Fix broken test suite (7 failures → 0)
 - [x] Clean __pycache__ directories (26 removed)
@@ -16,6 +18,8 @@ Pool visualizer maintenance and polish
 - [x] Update npm dependencies (patch versions)
 
 ## Up Next
+- [ ] Verify sales-rep PDF download flow with auth
+- [ ] Confirm guest session can create leads after access hardening
 - [ ] Test water features (fire bowls) in generation
 - [ ] Test pool site assessment on backyard images
 - [ ] Investigate token refresh issue (expired tokens in logs)
