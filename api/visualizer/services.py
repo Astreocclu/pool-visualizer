@@ -117,10 +117,11 @@ class ScreenVisualizer:
         if hasattr(types, 'ThinkingConfig'):
             config_args['thinking_config'] = types.ThinkingConfig(include_thoughts=True)
 
-        if hasattr(types, 'ImageGenerationConfig'):
-            config_args['image_generation_config'] = types.ImageGenerationConfig(
-                guidance_scale=70,
-                person_generation="dont_generate_people"
+        # Set output resolution - "4K" for highest quality
+        # Options: "1K" (default, ~1024px), "2K" (~2048px), "4K" (~4096px)
+        if hasattr(types, 'ImageConfig'):
+            config_args['image_config'] = types.ImageConfig(
+                imageSize="4K"
             )
 
         # Comprehensive retry logic - retries on API errors AND empty responses
@@ -247,10 +248,11 @@ class ScreenVisualizer:
         if hasattr(types, 'ThinkingConfig'):
             config_args['thinking_config'] = types.ThinkingConfig(include_thoughts=True)
 
-        if hasattr(types, 'ImageGenerationConfig'):
-            config_args['image_generation_config'] = types.ImageGenerationConfig(
-                guidance_scale=70,
-                person_generation="dont_generate_people"
+        # Set output resolution - "4K" for highest quality
+        # Options: "1K" (default, ~1024px), "2K" (~2048px), "4K" (~4096px)
+        if hasattr(types, 'ImageConfig'):
+            config_args['image_config'] = types.ImageConfig(
+                imageSize="4K"
             )
 
         # Comprehensive retry logic - retries on API errors AND empty responses
